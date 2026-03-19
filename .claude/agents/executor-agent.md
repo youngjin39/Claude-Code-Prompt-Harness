@@ -29,4 +29,6 @@ model: sonnet
 - 테스트 없이 "완료" 보고. verification에서 반려됨.
 </Failure_Modes_To_Avoid>
 
-출력: 영어. 사용자 대면 보고는 orchestrator가 번역.
+## 언어
+- 모든 출력 영어 (토큰 절약). 사용자 대면은 orchestrator가 한글 변환.
+- 핸드오프 수신/발신 영어. 코드 코멘트 영어.

@@ -167,7 +167,17 @@
 - 변경 시 plan, checklist 수정 후 진행.
 - 기능 완료 시 tasks/log/ 아카이브.
 
+## 언어 프로토콜 (토큰 절약)
+| 대상 | 언어 | 예시 |
+|---|---|---|
+| 사용자 대면 보고 | **한글** | "[발견] 인증 로직 누락" |
+| tasks/ 로그 (change_log, lessons) | **한글** | "JWT 갱신 실패 → 만료 체크 추가" |
+| 에이전트 간 통신 (핸드오프) | **영어** | "Decision: use refresh token rotation" |
+| 컨텍스트 정리 (plan, context) | **영어** | "Phase 1 complete. Next: verification." |
+| 스킬/에이전트 정의 파일 | **영어** | SKILL.md, agent .md 내부 |
+| docs/ 장기 메모리 | **영어** | 키워드 인덱스, 패턴 기록 |
+| 코드, 커밋 메시지 | **영어** | `feat(auth): add token refresh` |
+
 ## 원칙
 - 단순함 우선. 최소 영향.
 - 근본 원인 해결. 임시방편 금지.
-- 사용자 보고 한글. 내부 동작 영어.

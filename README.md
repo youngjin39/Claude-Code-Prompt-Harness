@@ -154,7 +154,7 @@ Request → specificity signals? → none → deep-interview → classify
 bash <(curl -fsSL https://raw.githubusercontent.com/youngjin39/Claude-Code-Prompt-Harness/main/setup.sh)
 ```
 
-This automatically clones the harness, sets up the directory structure, and configures hooks.
+This automatically clones the harness, sets up the directory structure, and configures hooks. During setup, you'll be prompted to select your preferred language for user-facing output (Korean, English, Japanese, Chinese, or custom).
 
 > **Note:** In new projects, `tasks/` files are local working memory (gitignored by default).
 

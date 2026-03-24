@@ -33,7 +33,7 @@ command -v git >/dev/null 2>&1 || error "git is not installed."
 
 # --- Step 1: Clone ---
 info "Cloning claude-code-harness..."
-git clone --depth 1 "$REPO_URL" "$HARNESS_DIR" 2>/dev/null
+git clone --depth 1 "$REPO_URL" "$HARNESS_DIR" || { echo -e "${RED}ERROR: Failed to clone harness repo. Check network connection.${NC}"; exit 1; }
 rm -rf "$HARNESS_DIR/.git"
 
 # --- Step 2: Move files ---
@@ -54,6 +54,12 @@ info "Cleaning harness development artifacts..."
 # Remove harness-specific docs (keep directory structure)
 rm -f docs/decisions/master-plan-v2.md
 rm -f docs/references/repo-analysis-summary.md
+
+# Ensure all docs/ subdirectories exist
+for dir in architecture decisions patterns domain risks integrations references; do
+  mkdir -p "docs/$dir"
+  touch "docs/$dir/.gitkeep"
+done
 
 # Reset memory-map.md to empty template
 cat > docs/memory-map.md << 'MEMEOF'
@@ -91,6 +97,18 @@ type: index
 3. Max 50 lines. Split if exceeded.
 4. **Add a row to the keyword table below** (auto-update).
 5. Duplicate keywords → add file to same row (1:N).
+
+## Skill Usage Tracking
+| Skill | Last Used | Count |
+|---|---|---|
+| brainstorming | — | 0 |
+| code-review | — | 0 |
+| deep-interview | — | 0 |
+| git-commit | — | 0 |
+| project-doctor | — | 0 |
+| testing | — | 0 |
+| verification | — | 0 |
+| writing-plans | — | 0 |
 
 ## Promotion Pipeline
 - Project local (docs/) → 2+ same pattern → promote to lessons.md rule

@@ -106,7 +106,7 @@ Request → specificity signals? → none → deep-interview → classify
 |---|---|
 | feature | brainstorming → plans → executor → code-review → verification |
 | bugfix | deep-interview (lite) → executor → testing → verification |
-| refactor | brainstorming → plans → executor → code-review |
+| refactor | brainstorming → plans → executor → code-review → verification |
 | security | code-review (security) → executor → verification |
 
 ## Memory System
@@ -149,7 +149,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/youngjin39/Claude-Code-Promp
 
 This automatically clones the harness, sets up the directory structure, and configures hooks.
 
-> **Note:** `tasks/` files are local working memory and not tracked by git.
+> **Note:** In new projects, `tasks/` files are local working memory (gitignored by default).
 
 ### Manual Setup
 

@@ -38,6 +38,14 @@ rm -rf "$HARNESS_DIR/.git"
 
 # --- Step 2: Move files ---
 info "Setting up project structure..."
+
+# Guard against overwriting existing .claude/ directory
+if [ -d ".claude" ]; then
+  echo -e "${RED}ERROR: .claude/ directory already exists. Remove it first or run from an empty directory.${NC}"
+  rm -rf "$HARNESS_DIR"
+  exit 1
+fi
+
 mv "$HARNESS_DIR"/.claude .
 mv "$HARNESS_DIR"/.gitignore .
 mv "$HARNESS_DIR"/.mcp.json .
@@ -305,7 +313,7 @@ echo "  Skills:  8 (brainstorming, plans, verification, interview,"
 echo "              code-review, testing, git-commit, project-doctor)"
 echo "  Hooks:   3 (SessionStart, PreCompact, PostToolUse)"
 echo ""
-echo "  Note: tasks/ files are local working memory (not git-tracked)."
+echo "  Note: tasks/ files are local working memory (gitignored by default)."
 echo ""
 echo "  Next steps:"
 echo "    1. cd $(pwd)"

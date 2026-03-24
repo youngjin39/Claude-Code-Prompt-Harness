@@ -150,7 +150,7 @@ type: index
 - (none)
 MEMEOF
 # Replace SETUP_DATE with actual date
-sed -i '' "s/SETUP_DATE/$(date +%Y-%m-%d)/g" docs/memory-map.md
+SETUP_DATE=$(date +%Y-%m-%d) perl -pi -e 's/SETUP_DATE/$ENV{SETUP_DATE}/g' docs/memory-map.md
 
 # --- Step 4: Initialize tasks/ ---
 info "Initializing tasks/..."
@@ -229,13 +229,13 @@ read -p "Package manager (e.g., npm, pnpm, pip): " PKG_MANAGER
 
 # Update CLAUDE.md (use perl to avoid sed delimiter issues with user input)
 if [ -n "$PROJECT_NAME" ]; then
-  P="$PROJECT_NAME" perl -pi -e 's/claude-code-harness — Claude Code Project Management Harness/$ENV{P} — Claude Code Project Management Harness/' CLAUDE.md 2>/dev/null
+  P="$PROJECT_NAME" perl -pi -e 's/claude-code-harness — Claude Code Project Management Harness/$ENV{P} — Claude Code Project Management Harness/' CLAUDE.md
 fi
 if [ -n "$LANG_FRAMEWORK" ]; then
-  P="$LANG_FRAMEWORK" perl -pi -e 's/\| Language\/Framework \| TBD \(project management harness\) \|/| Language\/Framework | $ENV{P} |/' CLAUDE.md 2>/dev/null
+  P="$LANG_FRAMEWORK" perl -pi -e 's/\| Language\/Framework \| TBD \(project management harness\) \|/| Language\/Framework | $ENV{P} |/' CLAUDE.md
 fi
 if [ -n "$PKG_MANAGER" ]; then
-  P="$PKG_MANAGER" perl -pi -e 's/\| Package Manager \| TBD \|/| Package Manager | $ENV{P} |/' CLAUDE.md 2>/dev/null
+  P="$PKG_MANAGER" perl -pi -e 's/\| Package Manager \| TBD \|/| Package Manager | $ENV{P} |/' CLAUDE.md
 fi
 
 # --- Step 6: Clean settings.local.json ---
@@ -304,6 +304,8 @@ echo "  Agents:  3 (orchestrator, executor, quality)"
 echo "  Skills:  8 (brainstorming, plans, verification, interview,"
 echo "              code-review, testing, git-commit, project-doctor)"
 echo "  Hooks:   3 (SessionStart, PreCompact, PostToolUse)"
+echo ""
+echo "  Note: tasks/ files are local working memory (not git-tracked)."
 echo ""
 echo "  Next steps:"
 echo "    1. cd $(pwd)"

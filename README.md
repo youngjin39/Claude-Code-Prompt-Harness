@@ -141,13 +141,24 @@ Request → specificity signals? → none → deep-interview → classify
 
 ## Getting Started
 
-### Apply to a New Project
+### Quick Setup (Recommended)
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/youngjin39/Claude-Code-Prompt-Harness/main/setup.sh)
+```
+
+This automatically clones the harness, sets up the directory structure, and configures hooks.
+
+> **Note:** `tasks/` files are local working memory and not tracked by git.
+
+### Manual Setup
 
 1. Clone or copy this repository into your project root.
 2. Edit `CLAUDE.md` — update the **Development Environment** and **Build & Run** sections to match your project.
 3. Add project-specific domain skills under `.claude/skills/`.
-4. Initialize `tasks/` files (`plan.md`, `checklist.md`, `lessons.md`, `change_log.md`).
-5. Start working — the orchestrator will guide the rest.
+4. Initialize `tasks/` files (`plan.md`, `checklist.md`, `lessons.md`, `change_log.md`, `cost-log.md`).
+5. Configure tool permissions in `.claude/settings.local.json`.
+6. Start working — the orchestrator will guide the rest.
 
 ## Adding Domain Skills
 

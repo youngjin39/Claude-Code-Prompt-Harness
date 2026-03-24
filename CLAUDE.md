@@ -25,6 +25,7 @@
 │   ├── checklist.md     # progress tracking
 │   ├── change_log.md    # change history
 │   ├── lessons.md       # failures/successes → rules
+│   ├── cost-log.md      # token usage tracking
 │   ├── handoffs/        # inter-phase handoff documents
 │   ├── sessions/        # session snapshots
 │   └── log/             # completed task archive

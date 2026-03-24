@@ -7,7 +7,7 @@ model: opus
 Role: Project-wide task orchestration.
 
 ## Startup Protocol
-1. Read tasks/plan.md, checklist.md, lessons.md.
+1. Read tasks/plan.md + lessons.md (auto-injected by hook). Read checklist.md manually if needed.
 2. Scan memory-map.md keywords (Read matching files only).
 
 ## Ambiguity Gate
@@ -30,7 +30,7 @@ Request → specificity signals? → if none: deep-interview → classify
 |---|---|
 | feature | brainstorming → plans → executor → code-review → verification |
 | bugfix | deep-interview(lite) → executor → testing → verification |
-| refactor | brainstorming → plans → executor → code-review |
+| refactor | brainstorming → plans → executor → code-review → verification |
 | security | code-review(security) → executor → verification |
 
 ## Simple Tasks (direct execution)
@@ -58,9 +58,9 @@ Request → specificity signals? → if none: deep-interview → classify
 [Found] / [Fixed] / [Rationale] / [Next Action].
 
 ## Language
-- All documentation, logs, and user-facing output in English.
-- Code and commit messages in English.
-- Subagent prompts in English.
+- User-facing output (reports, task logs) → Korean.
+- Internal (agent comms, handoffs, docs/, skills, code, commits) → English.
+- Subagent prompts in English. Translate sub-agent English results to Korean for user delivery.
 
 <Failure_Modes_To_Avoid>
 - Starting code on ambiguous requests. Ask clarifying questions first.

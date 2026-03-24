@@ -57,10 +57,18 @@ rm -f docs/references/repo-analysis-summary.md
 
 # Reset memory-map.md to empty template
 cat > docs/memory-map.md << 'MEMEOF'
-# Neuron Memory Map — Keyword Index
+---
+title: Neuron Memory Map — Keyword Index
+keywords: [memory, index, keyword, search, storage]
+created: SETUP_DATE
+last_used: SETUP_DATE
+type: index
+---
+
+# Memory Map
 
 > Long-term memory. No decay. Load only what's needed via category map.
-> Max 50 lines per file. Frontmatter required: title, keywords, created, last_used.
+> Max 50 lines per file (exception: `type: archive`). Frontmatter required: title, keywords, created, last_used.
 > 100+ memory files → consider SQLite. 200+ lines in this file → split into sub-indexes.
 
 ## Search Protocol
@@ -123,6 +131,8 @@ cat > docs/memory-map.md << 'MEMEOF'
 > Reference projects, documents, repo analysis results
 - (none)
 MEMEOF
+# Replace SETUP_DATE with actual date
+sed -i '' "s/SETUP_DATE/$(date +%Y-%m-%d)/g" docs/memory-map.md
 
 # --- Step 4: Initialize tasks/ ---
 info "Initializing tasks/..."
@@ -199,15 +209,15 @@ read -p "Project name: " PROJECT_NAME
 read -p "Language/Framework (e.g., TypeScript/Next.js): " LANG_FRAMEWORK
 read -p "Package manager (e.g., npm, pnpm, pip): " PKG_MANAGER
 
-# Update CLAUDE.md
+# Update CLAUDE.md (use perl to avoid sed delimiter issues with user input)
 if [ -n "$PROJECT_NAME" ]; then
-  sed -i '' "s/claude-code-harness — Claude Code Project Management Harness/${PROJECT_NAME} — Claude Code Project Management Harness/" CLAUDE.md 2>/dev/null || true
+  P="$PROJECT_NAME" perl -pi -e 's/claude-code-harness — Claude Code Project Management Harness/$ENV{P} — Claude Code Project Management Harness/' CLAUDE.md 2>/dev/null
 fi
 if [ -n "$LANG_FRAMEWORK" ]; then
-  sed -i '' "s/| Language\/Framework | TBD (project management harness) |/| Language\/Framework | ${LANG_FRAMEWORK} |/" CLAUDE.md 2>/dev/null || true
+  P="$LANG_FRAMEWORK" perl -pi -e 's/\| Language\/Framework \| TBD \(project management harness\) \|/| Language\/Framework | $ENV{P} |/' CLAUDE.md 2>/dev/null
 fi
 if [ -n "$PKG_MANAGER" ]; then
-  sed -i '' "s/| Package Manager | TBD |/| Package Manager | ${PKG_MANAGER} |/" CLAUDE.md 2>/dev/null || true
+  P="$PKG_MANAGER" perl -pi -e 's/\| Package Manager \| TBD \|/| Package Manager | $ENV{P} |/' CLAUDE.md 2>/dev/null
 fi
 
 # --- Step 6: Clean settings.local.json ---
@@ -250,7 +260,7 @@ cat > .claude/settings.local.json << 'SETEOF'
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-check.sh\"",
             "timeout": 10,
-            "statusMessage": "Checking for debug statements..."
+            "statusMessage": "Checking debug statements + credentials..."
           }
         ]
       }
@@ -280,7 +290,8 @@ echo ""
 echo "  Next steps:"
 echo "    1. cd $(pwd)"
 echo "    2. Review CLAUDE.md and customize Build & Run section"
-echo "    3. Start Claude Code: claude"
+echo "    3. Configure tool permissions in .claude/settings.local.json"
+echo "    4. Start Claude Code: claude"
 echo ""
 echo "  Optional:"
 echo "    - Add domain skills to .claude/skills/"

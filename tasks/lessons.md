@@ -1,17 +1,17 @@
 # Lessons
 
-## 실패한 접근법 (What Did NOT Work)
-| 날짜 | 작업 | 시도한 방법 | 실패 이유 | 올바른 방법 |
+## What Did NOT Work
+| Date | Task | Attempt | Why Failed | Correct Approach |
 |---|---|---|---|---|
-| 2026-03-20 | v1 계획 수립 | 규칙 강제를 Phase 1 중심에 배치 | 메모리/컨텍스트가 Phase 3에 묻힘. 사용자 우선순위와 불일치. | 3축(워크플로우/메모리/컨텍스트) 중심으로 재편 |
-| 2026-03-20 | 메모리 설계 | 4층 (docs + lessons + agent-memory + sessions) | 역할 경계 모호. "어디에 저장?" 판단 불가. | 3층으로 축소. agent-memory를 docs/에 통합 |
-| 2026-03-20 | plan.md 작성 | 507줄 전체 설계를 plan.md에 | 컨텍스트 효율성 원칙 자기 모순. 매 세션 ~2000토큰. | 전체 설계→docs/decisions/, plan.md는 compact |
+| 2026-03-20 | v1 plan | Rule enforcement as Phase 1 focus | Memory/context buried in Phase 3. Misaligned with user priorities. | 3-axis redesign (workflow/memory/context) |
+| 2026-03-20 | Memory design | 4 layers (docs + lessons + agent-memory + sessions) | Role boundaries unclear. "Where to store?" undecidable. | 3 layers. Merge agent-memory into docs/. |
+| 2026-03-20 | plan.md | 507-line full design in plan.md | Self-contradiction of context efficiency principle. ~2000 tokens per session. | Full design → docs/decisions/, plan.md stays compact. |
 
-## 성공 패턴 (What Worked)
-| 날짜 | 작업 | 방법 | 왜 효과적이었나 |
+## What Worked
+| Date | Task | Method | Why Effective |
 |---|---|---|---|
-| 2026-03-20 | 레포 분석 | 4개 레포 병렬 서브에이전트 | 독립 작업이므로 병렬 효율 극대화. 각 ~100초. |
+| 2026-03-20 | Repo analysis | 4 repos via parallel sub-agents | Independent tasks → parallel efficiency maximized. ~100s each. |
 
-## 규칙화된 교훈
-(위 테이블에서 2회+ 반복 시 규칙으로 승격)
-- 계획 문서는 compact 유지. 아카이브와 현재 계획 분리.
+## Promoted Rules
+(Promoted from table above after 2+ repetitions)
+- Planning docs must stay compact. Separate archive from active plan.

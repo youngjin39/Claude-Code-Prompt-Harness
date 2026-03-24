@@ -7,7 +7,7 @@ HANDOFF_DIR="$PROJECT_DIR/tasks/handoffs"
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 HANDOFF_FILE="$HANDOFF_DIR/auto-${TIMESTAMP}.md"
 
-mkdir -p "$HANDOFF_DIR"
+mkdir -p "$HANDOFF_DIR" || { echo "[PreCompact] ERROR: Cannot create $HANDOFF_DIR"; exit 0; }
 
 # Auto-generate handoff skeleton from current state
 {
@@ -31,8 +31,11 @@ mkdir -p "$HANDOFF_DIR"
   echo "- Remaining risks:"
   echo "- Next actions:"
   echo "- Key files modified:"
-} > "$HANDOFF_FILE" 2>/dev/null
+} > "$HANDOFF_FILE"
 
-echo "[PreCompact] Auto-handoff saved: $HANDOFF_FILE"
+if [ -f "$HANDOFF_FILE" ]; then
+  echo "[PreCompact] Auto-handoff saved: $HANDOFF_FILE"
+else
+  echo "[PreCompact] ERROR: Failed to write handoff file."
+fi
 echo "Review and fill the TODO section before compaction proceeds."
-echo "Format: decisions / rejected / risks / next actions / files"

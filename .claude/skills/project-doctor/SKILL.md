@@ -3,7 +3,6 @@ name: project-doctor
 description: "Project health check + memory integrity.\n\nTrigger: diagnose, doctor, health check, status"
 user-invocable: true
 context: fork
-agent: Explore
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -11,7 +10,7 @@ allowed-tools: Read, Grep, Glob, Bash
 
 ## Structure Check
 1. CLAUDE.md exists + ≤200 lines.
-2. tasks/ required files exist (plan, context, checklist, change_log, lessons).
+2. tasks/ required files exist (plan, context, checklist, change_log, lessons, cost-log).
 3. settings.local.json permissions valid.
 4. Skill folders match CLAUDE.md trigger table (glob → compare).
 5. Agent files exist (orchestrator, executor, quality).
@@ -24,8 +23,8 @@ allowed-tools: Read, Grep, Glob, Bash
 ## Memory Integrity Check
 9. docs/memory-map.md exists.
 10. All file paths in memory-map.md actually exist.
-11. docs/ .md files have frontmatter (title, keywords).
-12. No file exceeds 50 lines.
+11. docs/ .md files have frontmatter (title, keywords). Index files (`type: index`) exempt from content rules.
+12. No docs/ file exceeds 50 lines (exception: `type: archive` in frontmatter).
 
 ## Context Efficiency Check
 13. plan.md ≤ 50 lines.
@@ -35,10 +34,10 @@ allowed-tools: Read, Grep, Glob, Bash
 ## Skill Health Check
 16. Each skill's referenced commands exist (e.g., `npm run lint` → package.json has lint script).
 17. CLAUDE.md trigger table paths match actual SKILL.md files (no phantom entries).
-18. Skill files with `last_used` > 30 days → warn as potentially stale.
+18. Skills with `last_used` > 30 days in memory-map.md Skill Usage table → warn as stale.
 
 ## Security Scan
-19. No credential patterns in .md/.json/.yaml/.sh files (sk-, ghp_, AIza, xoxb-, AKIA).
+19. No credential patterns in .md/.json/.yaml/.sh files (sk-, ghp_, gho_, AIza, xoxb-, AKIA, aws_secret_access_key).
 20. No dangerous shell patterns in skill files (rm -rf /, curl|sh, eval).
 21. .env files listed in .gitignore.
 

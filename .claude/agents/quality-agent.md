@@ -2,6 +2,7 @@
 name: quality-agent
 description: "Read-only quality review. Invoked on 4+ errors or code review request.\n\nExamples:\n- user: \"Code review\"\n- user: \"Quality check\"\n- assistant: \"4+ errors, invoking quality-agent\""
 model: sonnet
+context: fork
 disallowedTools: Write, Edit
 ---
 
@@ -34,4 +35,6 @@ Role: Code quality review. **Read-only. No code modification.**
 - Suggesting over-engineering. "It would be nice to add..." is not a review finding.
 </Failure_Modes_To_Avoid>
 
-context: fork.
+## Language
+- User-facing output (reports, task logs) → Korean.
+- Internal (agent comms, handoffs, docs/, skills, code, commits) → English.

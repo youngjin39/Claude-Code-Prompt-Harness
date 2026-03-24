@@ -35,8 +35,8 @@ Claude Code project management harness. 3-axis design:
 - Full (Phase 2): ambiguity score (Goal 40% + Constraints 30% + Success 30%), challenge rounds.
 
 ### 7. Hooks = shell commands (Phase 3)
-- SessionStart: `cat tasks/plan.md tasks/lessons.md` → context injection. ✅
-- PostToolUse(Edit|Write): `jq + linter`. ✅
+- SessionStart: `head -50` plan.md + lessons.md + latest session snapshot → context injection. ✅
+- PostToolUse(Edit|Write): debug statement + credential detection via grep. ✅
 - PreCompact: handoff reminder script. ✅
 - Hooks cannot "auto-Read skills". Handled via CLAUDE.md instructions.
 
@@ -46,7 +46,7 @@ Claude Code project management harness. 3-axis design:
 
 ### 9. Language protocol (token optimization)
 - User reports, task logs → Korean.
-- Agent communication, handoffs, plan/context, docs/, skills, code → English.
+- Agent communication, handoffs, plan/context, docs/, skills, code, commits → English.
 - English is ~2-3x more token-efficient than Korean for same information.
 
 ## Technical Reference

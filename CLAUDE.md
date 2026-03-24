@@ -18,7 +18,7 @@
 ├── .claude/
 │   ├── settings.local.json
 │   ├── agents/          # main-orchestrator, quality-agent, executor-agent
-│   └── skills/          # 7 skills (see skill trigger table)
+│   └── skills/          # 8 skills (see skill trigger table)
 ├── tasks/
 │   ├── plan.md          # current phase summary (compact)
 │   ├── context.md       # decision rationale
@@ -58,7 +58,7 @@ Request → specificity signals? → none → deep-interview → classify
 |---|---|
 | feature | brainstorming → plans → executor → code-review → verification |
 | bugfix | deep-interview(lite) → executor → testing → verification |
-| refactor | brainstorming → plans → executor → code-review |
+| refactor | brainstorming → plans → executor → code-review → verification |
 | security | code-review(security) → executor → verification |
 
 ### Agent Role Separation
@@ -91,14 +91,14 @@ Request → specificity signals? → none → deep-interview → classify
 
 | Keyword | Skill | Path |
 |---|---|---|
-| review, PR, quality | code-review | .claude/skills/code-review/SKILL.md |
-| test, TDD, verify | testing | .claude/skills/testing/SKILL.md |
-| commit, git | git-commit | .claude/skills/git-commit/SKILL.md |
-| diagnose, health check | project-doctor | .claude/skills/project-doctor/SKILL.md |
-| design, brainstorm | brainstorming | .claude/skills/brainstorming/SKILL.md |
-| plan, implementation plan | writing-plans | .claude/skills/writing-plans/SKILL.md |
-| completion check, verification | verification | .claude/skills/verification/SKILL.md |
-| interview, requirements, ambiguous | deep-interview | .claude/skills/deep-interview/SKILL.md |
+| review, PR, quality, merge check, post-completion | code-review | .claude/skills/code-review/SKILL.md |
+| test, TDD, unit test, integration test | testing | .claude/skills/testing/SKILL.md |
+| commit, git, save changes | git-commit | .claude/skills/git-commit/SKILL.md |
+| diagnose, doctor, health check, status | project-doctor | .claude/skills/project-doctor/SKILL.md |
+| design, brainstorming, architecture, new feature | brainstorming | .claude/skills/brainstorming/SKILL.md |
+| plan, implementation plan, step design | writing-plans | .claude/skills/writing-plans/SKILL.md |
+| verify, done check, proof, self-check | verification | .claude/skills/verification/SKILL.md |
+| interview, requirements, clarify, ambiguous | deep-interview | .claude/skills/deep-interview/SKILL.md |
 
 > On skill trigger: update `last_used` + `count` in docs/memory-map.md Skill Usage table.
 
@@ -114,7 +114,7 @@ Request → specificity signals? → none → deep-interview → classify
 ### Layer 1: Project Knowledge (docs/) — what we know
 - Long-term memory. No decay. Permanently preserved.
 - Keyword index (memory-map.md) → category → file. Load only what is needed.
-- Max 50 lines per file. Frontmatter: title, keywords, created, last_used.
+- Max 50 lines per file (exception: `type: archive` files). Frontmatter: title, keywords, created, last_used.
 
 ### Layer 2: Behavioral Rules (tasks/lessons.md) — what to do / not do
 - Failure/success table → promoted to rule after 2 repetitions.
@@ -143,8 +143,8 @@ Request → specificity signals? → none → deep-interview → classify
 
 ## Automation Hooks (.claude/hooks/)
 - **SessionStart**: auto-load plan.md + lessons.md + most recent session.
-- **PreCompact**: handoff writing reminder.
-- **PostToolUse(Edit|Write)**: warning for debug statements (console.log, print).
+- **PreCompact**: auto-generate handoff skeleton + reminder.
+- **PostToolUse(Edit|Write)**: debug statement + credential leak detection.
 
 ## Automatic Memory Harvesting
 - On task completion, assess: "Was anything new learned?"
@@ -157,12 +157,14 @@ Request → specificity signals? → none → deep-interview → classify
 - Self-check: error handling + security on the 2 most recently modified files.
 
 ## Project Management
-- At start, read plan, checklist, lessons (SessionStart hook injects automatically).
+- At start, read plan + lessons (SessionStart hook injects automatically). Checklist via manual Read.
 - Before proceeding with changes, update plan and checklist.
 - On feature completion, archive to tasks/log/.
 
 ## Language Protocol
-All documentation, logs, and user-facing output in English. Code and commit messages in English.
+- User-facing output (reports, task logs) → Korean.
+- Internal (agent comms, handoffs, docs/, skills, code, commits) → English.
+- English is ~2-3x more token-efficient for same information.
 
 ## Principles
 - Simplicity first. Minimum impact.

@@ -1,3 +1,11 @@
+---
+title: Master Plan v2 — Full Design Archive
+keywords: [3-axis, pipeline, master-plan, workflow, memory, context]
+created: 2026-03-20
+last_used: 2026-03-24
+type: archive
+---
+
 # Master Plan — prompt_DEV Harness (v2, Three-Axis Redesign)
 
 > Core axes: **Development Workflow** / **Memory Efficiency** / **Context Efficiency**

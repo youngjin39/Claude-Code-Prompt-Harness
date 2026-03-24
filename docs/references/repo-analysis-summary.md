@@ -1,3 +1,11 @@
+---
+title: Reference Repo Analysis Summary
+keywords: [superpowers, cli-anything, omc, everything-claude-code, TDD, harness]
+created: 2026-03-20
+last_used: 2026-03-24
+type: archive
+---
+
 # Reference Repo Analysis Summary (2026-03-20)
 
 ## 1. Superpowers (obra) — TDD + Plan Enforcement Framework

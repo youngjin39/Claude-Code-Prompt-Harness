@@ -2,7 +2,7 @@
 
 ## Phase 1 — Foundation ✅
 - ✅ 3 skills (brainstorming, writing-plans, verification)
-- ✅ 3 agents (orchestrator, executor, quality-readonly)
+- ✅ 3 agents (orchestrator, executor, quality-agent)
 - ✅ Neuron memory (7 categories + keyword index)
 - ✅ CLAUDE.md v2 (trigger table, model routing, 3-layer memory)
 
@@ -23,8 +23,8 @@
 ## Post-Phase — Applied ✅
 - ✅ GitHub public repo: youngjin39/Claude-Code-Prompt-Harness
 - ✅ Harness applied to 4 projects (quietleaf, MineSweeper, StoryDirector, home_server)
-- ✅ Language protocol: user→KR, internal→EN
-- ✅ All agents/skills converted to English (token optimization)
+- ✅ Language protocol: user-facing→KR, internal→EN
+- ✅ All agents/skills/docs in English (token optimization)
 
 ## Next (user choice)
 - ⬜ Real-world testing on active project

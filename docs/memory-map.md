@@ -1,84 +1,46 @@
-# Neuron Memory Map — Keyword Index
+---
+title: Neuron Memory Map — Keyword Index
+keywords: [memory, index, keyword, search, storage]
+created: 2026-03-20
+last_used: 2026-03-24
+type: index
+---
 
-> Long-term memory. No decay. Load only what you need via category map.
-> Keep files under 50 lines. Frontmatter: title, keywords, created, last_used.
-> 100+ memory files → consider switching to SQLite. This file 200+ lines → split into per-category sub-indexes.
+# Memory Map
 
-## Search Protocol
-1. Scan the keyword table below for relevant keywords.
-2. Read only the matched files.
-3. If no match, skip memory load (save tokens).
-4. **Never read an entire category at once.**
-
-## Storage Protocol
-1. Create new memory file: `docs/{category}/{topic}.md`
-2. Frontmatter required:
-   ```yaml
-   ---
-   title: {title}
-   keywords: [keyword1, keyword2, ...]
-   created: {YYYY-MM-DD}
-   last_used: {YYYY-MM-DD}
-   ---
-   ```
-3. Keep under 50 lines. Split if exceeded.
-4. **Add a row to the keyword table in this file** (auto-update).
-5. Duplicate keywords → add file to the same row (1:N).
+> Load only what you need. Never read an entire category at once.
+> Memory files: ≤50 lines, YAML frontmatter required. 100+ files → consider SQLite.
 
 ## Skill Usage Tracking
-- When a skill is triggered, update its `last_used` in this table.
-- Skills unused for 30+ days → project-doctor flags as stale.
-
 | Skill | Last Used | Count |
 |---|---|---|
 | brainstorming | — | 0 |
 | code-review | — | 0 |
 | deep-interview | — | 0 |
 | git-commit | — | 0 |
-| project-doctor | — | 0 |
+| project-doctor | 2026-03-24 | 1 |
 | testing | — | 0 |
 | verification | — | 0 |
 | writing-plans | — | 0 |
 
-## Promotion Pipeline
-- Project-local (docs/) → same pattern 2+ times → promote to lessons.md rule
-- Same pattern across 2+ projects → consider promoting to ~/.claude/global-memory/
-
 ## Keyword → File Mapping
 | Keywords | Category | File |
 |---|---|---|
-| superpowers, TDD, hard-gate, iron-law | references | [Repo Analysis Summary](references/repo-analysis-summary.md) |
-| cli-anything, harness, SOP, registry | references | [Repo Analysis Summary](references/repo-analysis-summary.md) |
-| omc, deep-interview, risk, review-separation | references | [Repo Analysis Summary](references/repo-analysis-summary.md) |
-| token-optimization, lazy-loading, session-persistence | references | [Repo Analysis Summary](references/repo-analysis-summary.md) |
-| 3-axis, pipeline, master-plan | decisions | [Master Plan v2](decisions/master-plan-v2.md) |
+| superpowers, TDD, hard-gate, cli-anything, omc | references | [Repo Analysis](references/repo-analysis-summary.md) |
+| 3-axis, pipeline, master-plan, workflow, memory | decisions | [Master Plan v2](decisions/master-plan-v2.md) |
 
-## Items by Category
+## Category Index
+| Category | Files | Description |
+|---|---|---|
+| architecture | (none) | System structure, design patterns |
+| decisions | [Master Plan v2](decisions/master-plan-v2.md) | ADR + full design archive |
+| patterns | (none) | Reusable code/workflow patterns |
+| domain | (none) | Domain knowledge, business rules |
+| risks | (none) | Known risks, vulnerabilities |
+| integrations | (none) | External system APIs |
+| references | [Repo Analysis](references/repo-analysis-summary.md) | Reference repo analysis |
 
-### architecture
-> System structure, design patterns, dependency relationships
-- (none)
-
-### decisions
-> Key decisions and their rationale (ADR style)
-- [Master Plan v2](decisions/master-plan-v2.md) — Full Design Archive (3-axis, Phase 1~3)
-
-### patterns
-> Reusable code/workflow patterns
-- (none)
-
-### domain
-> Domain knowledge, business rules, glossary
-- (none)
-
-### risks
-> Known risks, vulnerabilities, cautions
-- (none)
-
-### integrations
-> External system integration info, APIs, services
-- (none)
-
-### references
-> Reference projects, documents, repo analysis results
-- [4 Repo Analysis Summary](references/repo-analysis-summary.md) — Superpowers, CLI-Anything, OMC, everything-claude-code
+## Protocols
+- **Search**: Scan keyword table → Read matched file only → Skip if no match.
+- **Store**: Create `docs/{category}/{topic}.md` with frontmatter → Add keyword row here.
+- **Promote**: 2+ repetitions → lessons.md rule. Cross-project → ~/.claude/global-memory/.

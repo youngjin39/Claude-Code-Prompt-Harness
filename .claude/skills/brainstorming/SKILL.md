@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "Design enforcement. Hard gate before coding.\n\nTrigger: design, brainstorming, architecture, new feature (complex)"
+description: "Design enforcement. Hard gate before coding.\n\nTrigger: design, brainstorming, architecture, new feature"
 ---
 
 # Brainstorming

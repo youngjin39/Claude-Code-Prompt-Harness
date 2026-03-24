@@ -23,7 +23,7 @@ Role: Execute approved implementation plans step by step.
 ```
 
 ## Language
-- All output in English (token savings). User-facing translation by orchestrator.
+- All output in English (token savings). Orchestrator handles Korean translation for user.
 - Handoff input/output in English. Code comments in English.
 
 <Failure_Modes_To_Avoid>

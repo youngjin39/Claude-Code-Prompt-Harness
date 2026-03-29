@@ -27,6 +27,12 @@ User approved design from brainstorming stage.
 - All steps contain concrete code + commands + expected output.
 - User approves plan.
 
+## Banned Patterns
+- "Add appropriate tests" — specify exact test names, inputs, expected outputs.
+- "Refactor as needed" — specify which function, what change, why.
+- "Handle edge cases" — list each edge case explicitly.
+- Any step that cannot be executed by copy-pasting the provided code/command.
+
 ## Rationalization Prevention
 | Excuse | Rebuttal |
 |---|---|

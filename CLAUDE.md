@@ -61,7 +61,7 @@ Request → specificity signals? → none → deep-interview → classify
 ### Orchestration Presets
 | Preset | Pipeline |
 |---|---|
-| feature | brainstorming → writing-plans → executor → code-review → verification |
+| feature | brainstorming → writing-plans → executor → testing → code-review → verification |
 | bugfix | deep-interview(lite) → executor → testing → verification |
 | refactor | brainstorming → writing-plans → executor → code-review → verification |
 | security | code-review(security) → executor → verification |
@@ -87,10 +87,10 @@ Request → specificity signals? → none → deep-interview → classify
 | verification | execution exit | verification passed based on execution evidence |
 
 ### Built-in Rules
-- brainstorming: must compare 2~3 alternatives.
-- writing-plans: no abstract expressions. Include actual code.
-- execution: 3-failure circuit breaker → revisit architecture.
-- verification: "should work", "probably fine" forbidden. Evidence only.
+- brainstorming: must compare 2~3 alternatives with different lenses. Counter-narrative mandatory.
+- writing-plans: no abstract expressions. Include actual code. Banned: "add tests", "refactor as needed".
+- execution: 3-failure circuit breaker → revisit architecture. Use git worktree for risky changes.
+- verification: "should work", "probably fine" forbidden. Evidence only. Red Team 5Q after gate pass.
 
 ## Skill Trigger Table (body loaded via Read when triggered)
 
@@ -172,5 +172,7 @@ Request → specificity signals? → none → deep-interview → classify
 - English is ~2-3x more token-efficient for same information.
 
 ## Principles
+- **Default is no-action.** Do not act without evidence. Unverified conclusions are void.
 - Simplicity first. Minimum impact.
 - Solve root causes. No workarounds.
+- **Prohibition > instruction.** Explicit bans are stronger than vague guidance. When defining behavior, state what is forbidden before what is desired.

@@ -19,6 +19,17 @@ Convert ambiguous requests into concrete requirements. Proceed only when ambigui
 Each dimension: 0~100% (0=fully clear, 100=fully ambiguous).
 Weighted average ≤ 20% → proceed to next stage.
 
+## Bottleneck Diagnosis
+Before questioning, classify the request's primary bottleneck:
+| Bottleneck | Symptom | Focus |
+|---|---|---|
+| A. Fact gap | Missing data, unverified claims | Gather evidence first |
+| B. Logic gap | Single-path reasoning, no alternatives | Force multi-path exploration |
+| C. Bias risk | Narrow framing, anchoring on first idea | Challenge assumptions |
+| D. Execution gap | Vague deliverables, no success criteria | Define concrete outputs |
+
+Tag the bottleneck in the ambiguity report. This guides which skills to invoke next.
+
 ## Procedure
 
 ### 1. Codebase First

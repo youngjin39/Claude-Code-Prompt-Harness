@@ -48,11 +48,11 @@ fi
 
 mv "$HARNESS_DIR"/.claude .
 mv "$HARNESS_DIR"/.gitignore .
-mv "$HARNESS_DIR"/.mcp.json .
 mv "$HARNESS_DIR"/CLAUDE.md .
 mv "$HARNESS_DIR"/LICENSE .
 mv "$HARNESS_DIR"/docs .
 # Skip README.md (user will create their own), setup.sh (this script)
+# Skip .mcp.json (generated in module selection step)
 
 rm -rf "$HARNESS_DIR"
 
@@ -269,6 +269,96 @@ else
   P="$USER_LANG" perl -pi -e 's/- User-facing output \(reports, task logs\) → Korean\./- User-facing output (reports, task logs) → $ENV{P}./' CLAUDE.md
 fi
 
+# --- Step 5c: Module Selection ---
+info "Configuring optional modules..."
+echo ""
+echo -e "${YELLOW}--- Module Selection ---${NC}"
+echo ""
+echo "  Core (always included):"
+echo "    ✓ 6 skills: brainstorming, writing-plans, verification,"
+echo "                 deep-interview, git-commit, project-doctor"
+echo "    ✓ 3 agents: orchestrator, executor, quality"
+echo "    ✓ 3 hooks:  session-start, pre-compact, post-edit-check"
+echo "    ✓ MCP:      fetch (web access)"
+echo ""
+echo "  Optional modules:"
+echo "    [1] code-review skill  — PR/quality review"
+echo "    [2] testing skill      — TDD enforcement"
+echo "    [3] Context7 MCP       — latest library docs auto-injection"
+echo "    [4] Sequential Thinking MCP — structured reasoning chains"
+echo ""
+read -p "  Select [1-4, comma-separated, 'all', or 'none', default: all]: " MODULE_CHOICE
+
+# Parse selection
+if [ -z "$MODULE_CHOICE" ] || [ "$MODULE_CHOICE" = "all" ]; then
+  MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=1; MOD_SEQ_THINK=1
+elif [ "$MODULE_CHOICE" = "none" ]; then
+  MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0
+else
+  MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0
+  IFS=',' read -ra MODS <<< "$MODULE_CHOICE"
+  for m in "${MODS[@]}"; do
+    m=$(echo "$m" | tr -d ' ')
+    case "$m" in
+      1) MOD_CODE_REVIEW=1 ;;
+      2) MOD_TESTING=1 ;;
+      3) MOD_CONTEXT7=1 ;;
+      4) MOD_SEQ_THINK=1 ;;
+    esac
+  done
+fi
+
+# Remove unselected optional skills + update CLAUDE.md references
+if [ "$MOD_CODE_REVIEW" -eq 0 ]; then
+  info "  Skipping: code-review skill"
+  rm -rf .claude/skills/code-review
+  perl -ni -e 'print unless /code-review.*SKILL\.md/' CLAUDE.md
+  perl -pi -e 's/ → code-review//g' CLAUDE.md
+  perl -ni -e 'print unless /\| code-review /' docs/memory-map.md
+else
+  info "  Including: code-review skill"
+fi
+
+if [ "$MOD_TESTING" -eq 0 ]; then
+  info "  Skipping: testing skill"
+  rm -rf .claude/skills/testing
+  perl -ni -e 'print unless /\| test, TDD.*testing/' CLAUDE.md
+  perl -pi -e 's/ → testing//g' CLAUDE.md
+  perl -ni -e 'print unless /\| testing /' docs/memory-map.md
+else
+  info "  Including: testing skill"
+fi
+
+# Build .mcp.json dynamically
+MCP_JSON='{\n  "mcpServers": {\n    "fetch": {\n      "command": "npx",\n      "args": ["-y", "@anthropic-ai/mcp-server-fetch"]\n    }'
+
+if [ "$MOD_CONTEXT7" -eq 1 ]; then
+  info "  Including: Context7 MCP"
+  MCP_JSON="$MCP_JSON"',\n    "context7": {\n      "command": "npx",\n      "args": ["-y", "@upstash/context7-mcp@latest"]\n    }'
+else
+  info "  Skipping: Context7 MCP"
+fi
+
+if [ "$MOD_SEQ_THINK" -eq 1 ]; then
+  info "  Including: Sequential Thinking MCP"
+  MCP_JSON="$MCP_JSON"',\n    "sequential-thinking": {\n      "command": "npx",\n      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]\n    }'
+else
+  info "  Skipping: Sequential Thinking MCP"
+fi
+
+MCP_JSON="$MCP_JSON"'\n  }\n}'
+echo -e "$MCP_JSON" > .mcp.json
+
+# Count selected modules
+SELECTED_COUNT=0
+[ "$MOD_CODE_REVIEW" -eq 1 ] && SELECTED_COUNT=$((SELECTED_COUNT + 1))
+[ "$MOD_TESTING" -eq 1 ] && SELECTED_COUNT=$((SELECTED_COUNT + 1))
+[ "$MOD_CONTEXT7" -eq 1 ] && SELECTED_COUNT=$((SELECTED_COUNT + 1))
+[ "$MOD_SEQ_THINK" -eq 1 ] && SELECTED_COUNT=$((SELECTED_COUNT + 1))
+
+echo ""
+info "$SELECTED_COUNT/4 optional modules selected."
+
 # --- Step 6: Clean settings.local.json ---
 info "Resetting settings.local.json to template..."
 cat > .claude/settings.local.json << 'SETEOF'
@@ -330,11 +420,23 @@ echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}  Setup complete!${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
+# Build skill list for summary
+SKILL_LIST="brainstorming, writing-plans, verification, interview, git-commit, project-doctor"
+SKILL_COUNT=6
+[ "$MOD_CODE_REVIEW" -eq 1 ] && { SKILL_LIST="$SKILL_LIST, code-review"; SKILL_COUNT=$((SKILL_COUNT + 1)); }
+[ "$MOD_TESTING" -eq 1 ] && { SKILL_LIST="$SKILL_LIST, testing"; SKILL_COUNT=$((SKILL_COUNT + 1)); }
+
+# Build MCP list for summary
+MCP_LIST="fetch"
+MCP_COUNT=1
+[ "$MOD_CONTEXT7" -eq 1 ] && { MCP_LIST="$MCP_LIST, context7"; MCP_COUNT=$((MCP_COUNT + 1)); }
+[ "$MOD_SEQ_THINK" -eq 1 ] && { MCP_LIST="$MCP_LIST, sequential-thinking"; MCP_COUNT=$((MCP_COUNT + 1)); }
+
 echo "  Project:  ${PROJECT_NAME:-unnamed}"
 echo "  Language: ${USER_LANG} (user-facing output)"
 echo "  Agents:   3 (orchestrator, executor, quality)"
-echo "  Skills:   8 (brainstorming, writing-plans, verification, interview,"
-echo "               code-review, testing, git-commit, project-doctor)"
+echo "  Skills:   ${SKILL_COUNT} (${SKILL_LIST})"
+echo "  MCP:      ${MCP_COUNT} (${MCP_LIST})"
 echo "  Hooks:    3 (SessionStart, PreCompact, PostToolUse)"
 echo ""
 echo "  Note: tasks/ files are local working memory (gitignored by default)."

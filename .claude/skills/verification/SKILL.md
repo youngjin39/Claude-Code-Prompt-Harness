@@ -32,6 +32,16 @@ Build → Type Check → Lint → Test Suite → Security Scan → Diff Review
 - Skip unavailable stages with SKIP label (e.g., no type checker → Type Check = SKIP).
 - READY verdict only when all stages PASS.
 
+## Red Team 5Q (post-gate self-attack)
+After all 6 stages PASS, answer these 5 questions before issuing READY:
+1. "Does this change break any existing behavior not covered by tests?"
+2. "Is there an edge case this implementation silently mishandles?"
+3. "Would this design hold if input volume increases 10x?"
+4. "Am I confident because of evidence, or because I wrote it?"
+5. "What is the most likely way this fails in production?"
+
+If any answer raises doubt → investigate before issuing READY.
+
 ## Circuit Breaker
 - Same issue fails **3 times** → STOP.
 - Instead of 4th attempt: re-examine architecture or escalate to user.

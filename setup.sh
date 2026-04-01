@@ -61,7 +61,9 @@ info "Cleaning harness development artifacts..."
 
 # Remove harness-specific docs (keep directory structure)
 rm -f docs/decisions/master-plan-v2.md
+rm -f docs/decisions/optimization-log.md
 rm -f docs/references/repo-analysis-summary.md
+rm -f docs/patterns/module-blueprint-system.md
 
 # Ensure all docs/ subdirectories exist
 for dir in architecture decisions patterns domain risks integrations references; do
@@ -312,6 +314,7 @@ fi
 if [ "$MOD_CODE_REVIEW" -eq 0 ]; then
   info "  Skipping: code-review skill"
   rm -rf .claude/skills/code-review
+  rm -f docs/integrations/codex-code-review.md
   perl -ni -e 'print unless /code-review.*SKILL\.md/' CLAUDE.md
   perl -pi -e 's/ → code-review//g' CLAUDE.md
   perl -ni -e 'print unless /\| code-review /' docs/memory-map.md
@@ -322,6 +325,7 @@ fi
 if [ "$MOD_TESTING" -eq 0 ]; then
   info "  Skipping: testing skill"
   rm -rf .claude/skills/testing
+  rm -f docs/integrations/computer-use-gui-testing.md
   perl -ni -e 'print unless /\| test, TDD.*testing/' CLAUDE.md
   perl -pi -e 's/ → testing//g' CLAUDE.md
   perl -ni -e 'print unless /\| testing /' docs/memory-map.md

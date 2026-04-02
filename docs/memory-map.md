@@ -22,6 +22,7 @@ type: index
 | testing | — | 0 |
 | verification | — | 0 |
 | writing-plans | — | 0 |
+| self-audit | — | 0 |
 
 ## Keyword → File Mapping
 | Keywords | Category | File |

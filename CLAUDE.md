@@ -22,7 +22,7 @@
 │   ├── settings.local.json
 │   ├── agents/          # main-orchestrator, quality-agent, executor-agent
 │   ├── hooks/           # session-start, pre-compact, post-edit-check
-│   └── skills/          # 8 skills (see skill trigger table)
+│   └── skills/          # 9 skills (see skill trigger table)
 ├── tasks/
 │   ├── plan.md          # current phase summary (compact)
 │   ├── context.md       # decision rationale
@@ -116,6 +116,7 @@ When triggered: report trigger reason + loaded skill(s) (max 3) in one line.
 | plan, implementation plan, step design | writing-plans | .claude/skills/writing-plans/SKILL.md |
 | verify, done check, proof, self-check | verification | .claude/skills/verification/SKILL.md |
 | interview, requirements, clarify, ambiguous | deep-interview | .claude/skills/deep-interview/SKILL.md |
+| self-audit, compliance, harness check, 자기점검 | self-audit | .claude/skills/self-audit/SKILL.md |
 
 > On skill trigger: update `last_used` + `count` in docs/memory-map.md Skill Usage table.
 

@@ -170,7 +170,7 @@ When triggered: report trigger reason + loaded skill(s) (max 3) in one line.
 - **PostToolUse(Edit|Write)**: debug statement + credential leak detection.
 
 ## Automatic Memory Harvesting
-- On task completion, assess: "Was anything new learned?"
+- On task completion **or when a reusable judgment/analysis emerges in conversation**, assess: "Was anything new learned?"
 - If yes → save to docs/{category}/ + update memory-map.md.
 - If no → skip (prevent unnecessary memory bloat).
 - **Cascade Update**: on save, check memory-map.md for existing files sharing keywords. If found, review for contradiction/overlap → update or flag. A single new insight may touch multiple files.

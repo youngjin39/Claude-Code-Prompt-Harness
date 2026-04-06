@@ -32,21 +32,22 @@ allowed-tools: Read, Grep, Glob, Bash
 15. Contradiction scan: files sharing ≥2 keywords → skim for conflicting claims → warn.
 16. Missing cross-refs: files sharing keywords but lacking `related` field pointing to each other.
 17. Stale content: `last_used` > 90 days → warn (review, not delete).
+18. Gap detection: scan CLAUDE.md + lessons.md for recurring concepts/terms that lack a corresponding docs/ page → suggest documentation.
 
 ## Context Efficiency Check
-18. plan.md ≤ 50 lines.
-19. CLAUDE.md has trigger table (no skill body inline).
-20. tasks/handoffs/ and tasks/sessions/ directories exist.
+19. plan.md ≤ 50 lines.
+20. CLAUDE.md has trigger table (no skill body inline).
+21. tasks/handoffs/ and tasks/sessions/ directories exist.
 
 ## Skill Health Check
-21. Each skill's referenced commands exist (e.g., `npm run lint` → package.json has lint script).
-22. CLAUDE.md trigger table paths match actual SKILL.md files (no phantom entries).
-23. Skills with `last_used` > 30 days in memory-map.md Skill Usage table → warn as stale. Skip skills with `—` (never used).
+22. Each skill's referenced commands exist (e.g., `npm run lint` → package.json has lint script).
+23. CLAUDE.md trigger table paths match actual SKILL.md files (no phantom entries).
+24. Skills with `last_used` > 30 days in memory-map.md Skill Usage table → warn as stale. Skip skills with `—` (never used).
 
 ## Security Scan
-24. No credential patterns in .md/.json/.yaml/.sh files (sk-, ghp_, gho_, AIza, xoxb-, AKIA, aws_secret_access_key).
-25. No dangerous shell patterns in skill files (rm -rf /, curl|sh, eval).
-26. .env files listed in .gitignore.
+25. No credential patterns in .md/.json/.yaml/.sh files (sk-, ghp_, gho_, AIza, xoxb-, AKIA, aws_secret_access_key).
+26. No dangerous shell patterns in skill files (rm -rf /, curl|sh, eval).
+27. .env files listed in .gitignore.
 
 ## Output
 ```

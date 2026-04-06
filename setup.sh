@@ -283,7 +283,7 @@ echo "  Core (always included):"
 echo "    ✓ 6 skills: brainstorming, writing-plans, verification,"
 echo "                 deep-interview, git-commit, project-doctor"
 echo "    ✓ 3 agents: orchestrator, executor, quality"
-echo "    ✓ 3 hooks:  session-start, pre-compact, post-edit-check"
+echo "    ✓ 4 hooks:  session-start, pre-compact, post-edit-check, session-end"
 echo "    ✓ MCP:      fetch (web access)"
 echo ""
 echo "  Optional modules:"
@@ -436,6 +436,18 @@ cat > .claude/settings.local.json << SETEOF
           }
         ]
       }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"\$CLAUDE_PROJECT_DIR/.claude/hooks/session-end.sh\"",
+            "timeout": 10,
+            "statusMessage": "Saving session snapshot..."
+          }
+        ]
+      }
     ]
   }
 }
@@ -471,7 +483,7 @@ echo "  Permissions: ${PERM_LEVEL}"
 echo "  Agents:      3 (orchestrator, executor, quality)"
 echo "  Skills:      ${SKILL_COUNT} (${SKILL_LIST})"
 echo "  MCP:         ${MCP_COUNT} (${MCP_LIST})"
-echo "  Hooks:       3 (SessionStart, PreCompact, PostToolUse)"
+echo "  Hooks:       4 (SessionStart, PreCompact, PostToolUse, SessionEnd)"
 echo ""
 echo "  Note: tasks/ files are local working memory (gitignored by default)."
 echo ""

@@ -113,13 +113,14 @@ The quality-agent uses an **adversarial lens**: its job is to find what the exec
 | Context7 | Latest library docs auto-injection | Optional |
 | Sequential Thinking | Structured reasoning chains | Optional |
 
-### Hooks (3)
+### Hooks (4)
 
 | Hook | Event | Action |
 |---|---|---|
 | session-start.sh | SessionStart | Auto-inject plan.md + lessons.md + latest session |
 | pre-compact.sh | PreCompact | Remind to write handoff before /compact |
 | post-edit-check.sh | PostToolUse (Edit\|Write) | Debug statement + credential leak detection |
+| session-end.sh | SessionEnd | Auto-save session snapshot + memory harvesting reminder |
 
 ### 4-Type Skill Trigger System
 
@@ -202,7 +203,7 @@ Unselected modules are removed at setup time — no dead context, no wasted toke
 ├── .claude/
 │   ├── settings.local.json      # Permissions + hooks
 │   ├── agents/                  # 3 agents
-│   ├── hooks/                   # 3 automation hooks
+│   ├── hooks/                   # 4 automation hooks
 │   └── skills/                  # 6–8 skills (based on selection)
 ├── tasks/                       # Working memory (gitignored)
 │   ├── plan.md                  # Current plan
@@ -248,6 +249,7 @@ Designed with inspiration from:
 - **[everything-claude-code](https://github.com/affaan-m/everything-claude-code)** — Token optimization, lazy loading, model routing.
 - **[ByteRover CLI](https://github.com/campfirein/byterover-cli)** — Context Tree architecture analysis: cascade update, cross-reference (`related` field), memory lint patterns.
 - **[LLM Wiki (Karpathy)](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)** — Persistent compounding knowledge base pattern: cascade update on ingest, contradiction detection, wiki lint.
+- **[Obsidian Mind](https://github.com/breferrari/obsidian-mind)** — SessionEnd hook pattern for auto-saving session snapshots on exit.
 
 Prompt techniques informed by research on: ReAct, CoVE, Tree/Graph of Thoughts, Contrastive CoT, Maieutic Prompting, Self-Refinement, Chain of Density, Plan-and-Solve, Reflexion, Skeleton-of-Thought.
 

@@ -113,13 +113,14 @@ quality-agent는 **적대적 렌즈**를 사용합니다: executor가 놓친 것
 | Context7 | 라이브러리 최신 문서 자동 주입 | 선택 |
 | Sequential Thinking | 구조화된 추론 체인 | 선택 |
 
-### 훅 (3개)
+### 훅 (4개)
 
 | 훅 | 이벤트 | 동작 |
 |---|---|---|
 | session-start.sh | SessionStart | plan.md + lessons.md + 최근 세션 자동 주입 |
 | pre-compact.sh | PreCompact | /compact 전 핸드오프 문서 작성 리마인더 |
 | post-edit-check.sh | PostToolUse (Edit\|Write) | 디버그 구문 + 자격증명 유출 탐지 |
+| session-end.sh | SessionEnd | 세션 스냅샷 자동 저장 + 메모리 하베스팅 리마인더 |
 
 ### 4종 스킬 트리거 시스템
 
@@ -202,7 +203,7 @@ Select [1-4, comma-separated, 'all', or 'none', default: all]:
 ├── .claude/
 │   ├── settings.local.json      # 권한 + 훅
 │   ├── agents/                  # 에이전트 3개
-│   ├── hooks/                   # 자동화 훅 3개
+│   ├── hooks/                   # 자동화 훅 4개
 │   └── skills/                  # 스킬 6~8개 (선택에 따라)
 ├── tasks/                       # 작업 메모리 (gitignore)
 │   ├── plan.md                  # 현재 계획
@@ -248,6 +249,7 @@ EOF
 - **[everything-claude-code](https://github.com/affaan-m/everything-claude-code)** — 토큰 최적화, 지연 로딩, 모델 라우팅.
 - **[ByteRover CLI](https://github.com/campfirein/byterover-cli)** — Context Tree 아키텍처 분석: 연쇄 업데이트, 교차참조(`related` 필드), 메모리 린트 패턴.
 - **[LLM Wiki (Karpathy)](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)** — 영속적 지식 축적 패턴: 인제스트 시 연쇄 업데이트, 모순 감지, 위키 린트.
+- **[Obsidian Mind](https://github.com/breferrari/obsidian-mind)** — SessionEnd 훅 패턴: 세션 종료 시 스냅샷 자동 저장.
 
 프롬프트 기법 참고 연구: ReAct, CoVE, Tree/Graph of Thoughts, Contrastive CoT, Maieutic Prompting, Self-Refinement, Chain of Density, Plan-and-Solve, Reflexion, Skeleton-of-Thought.
 

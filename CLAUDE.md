@@ -21,7 +21,7 @@
 ├── .claude/
 │   ├── settings.local.json
 │   ├── agents/          # main-orchestrator, quality-agent, executor-agent
-│   ├── hooks/           # session-start, pre-compact, post-edit-check
+│   ├── hooks/           # session-start, pre-compact, post-edit-check, session-end
 │   └── skills/          # 9 skills (see skill trigger table)
 ├── tasks/
 │   ├── plan.md          # current phase summary (compact)
@@ -168,6 +168,7 @@ When triggered: report trigger reason + loaded skill(s) (max 3) in one line.
 - **SessionStart**: auto-load plan.md + lessons.md + most recent session.
 - **PreCompact**: auto-generate handoff skeleton + reminder.
 - **PostToolUse(Edit|Write)**: debug statement + credential leak detection.
+- **SessionEnd**: auto-save session snapshot + memory harvesting reminder.
 
 ## Automatic Memory Harvesting
 - On task completion **or when a reusable judgment/analysis emerges in conversation**, assess: "Was anything new learned?"

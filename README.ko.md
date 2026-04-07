@@ -25,9 +25,26 @@ bash <(curl -fsSL https://raw.githubusercontent.com/youngjin39/Claude-Code-Promp
 | 단계 | 내용 |
 |---|---|
 | 프로젝트 정보 | 이름, 언어/프레임워크, 패키지 매니저 |
+| 프리셋 | 10개 스택 프리셋 또는 Custom (스택+모듈+권한 자동 설정) |
 | 출력 언어 | 한국어, 영어, 일본어, 중국어, 기타 |
-| 모듈 선택 | 선택적 스킬 및 MCP 서버 |
-| 권한 수준 | Strict / Standard / Permissive |
+| 모듈 선택 | 선택적 스킬 및 MCP 서버 (프리셋 선택 시 스킵) |
+| 권한 수준 | Strict / Standard / Permissive (프리셋 선택 시 스킵) |
+
+### 프로젝트 프리셋
+
+| # | 프리셋 | 스택 | 자동 설정 |
+|---|---|---|---|
+| 1 | Flutter 모바일 앱 | Dart/Flutter, pub | testing+code-review, Context7 |
+| 2 | Next.js 웹 앱 | TypeScript/Next.js, pnpm | testing+code-review, Context7+SeqThink |
+| 3 | Node/TS 백엔드 API | TypeScript/Node, npm | testing+code-review, SeqThink |
+| 4 | Python 백엔드 | Python/FastAPI, uv | testing+code-review, Context7 |
+| 5 | Python 데이터/ML | Python, uv | testing, SeqThink |
+| 6 | Rust 시스템 | Rust, cargo | testing+code-review, Strict 권한 |
+| 7 | Go 서비스 | Go, go mod | testing+code-review |
+| 8 | 임베디드 C/C++ | C/C++, cmake | code-review만, Strict 권한 |
+| 9 | Claude 전용 에이전트 | 코드 없음, 콘텐츠/판단 | testing 제외, SeqThink |
+| 10 | 정적 사이트/문서 | Astro/Hugo, npm | 최소 모듈 |
+| 11 | Custom | 수동 입력 | (기존 동작) |
 
 설치 후 `claude` 명령으로 시작하면 하네스가 자동으로 작동합니다.
 

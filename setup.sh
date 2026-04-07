@@ -237,8 +237,50 @@ info "Preparing CLAUDE.md..."
 echo ""
 echo -e "${YELLOW}--- Project Configuration ---${NC}"
 read -p "Project name: " PROJECT_NAME
-read -p "Language/Framework (e.g., TypeScript/Next.js): " LANG_FRAMEWORK
-read -p "Package manager (e.g., npm, pnpm, pip): " PKG_MANAGER
+
+# --- Preset Selection ---
+echo ""
+echo -e "${YELLOW}--- Project Preset ---${NC}"
+echo "  Pick a preset to auto-fill stack + modules + permissions."
+echo "  You can still edit CLAUDE.md and .mcp.json afterwards."
+echo ""
+echo "   [1]  Flutter Mobile App     (Dart, pub)         testing+code-review, Context7"
+echo "   [2]  Next.js Web App        (TypeScript, pnpm)  testing+code-review, Context7+SeqThink"
+echo "   [3]  Node/TS Backend API    (TypeScript, npm)   testing+code-review, SeqThink"
+echo "   [4]  Python Backend         (Python, uv)        testing+code-review, Context7"
+echo "   [5]  Python Data/ML         (Python, uv)        testing, SeqThink"
+echo "   [6]  Rust Systems           (Rust, cargo)       testing+code-review, Strict perms"
+echo "   [7]  Go Service             (Go, go mod)        testing+code-review"
+echo "   [8]  Embedded C/C++         (C/C++, cmake)      code-review only, Strict perms"
+echo "   [9]  Claude-only Agent      (no code, content)  no testing, SeqThink"
+echo "   [10] Static Site / Docs     (Astro/Hugo, npm)   minimal modules"
+echo "   [11] Custom                 (manual entry — current behavior)"
+echo ""
+read -p "  Select [1-11, default: 11]: " PRESET_CHOICE
+
+PRESET_NAME=""
+PRESET_LOCKED=0
+case "$PRESET_CHOICE" in
+  1)  PRESET_NAME="Flutter Mobile App";   LANG_FRAMEWORK="Dart/Flutter";       PKG_MANAGER="pub";    MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=1; MOD_SEQ_THINK=0; PERM_PRESET=2; PRESET_LOCKED=1 ;;
+  2)  PRESET_NAME="Next.js Web App";      LANG_FRAMEWORK="TypeScript/Next.js"; PKG_MANAGER="pnpm";   MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=1; MOD_SEQ_THINK=1; PERM_PRESET=2; PRESET_LOCKED=1 ;;
+  3)  PRESET_NAME="Node/TS Backend API";  LANG_FRAMEWORK="TypeScript/Node.js"; PKG_MANAGER="npm";    MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=0; MOD_SEQ_THINK=1; PERM_PRESET=2; PRESET_LOCKED=1 ;;
+  4)  PRESET_NAME="Python Backend";       LANG_FRAMEWORK="Python/FastAPI";     PKG_MANAGER="uv";     MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=1; MOD_SEQ_THINK=0; PERM_PRESET=2; PRESET_LOCKED=1 ;;
+  5)  PRESET_NAME="Python Data/ML";       LANG_FRAMEWORK="Python/ML";          PKG_MANAGER="uv";     MOD_CODE_REVIEW=0; MOD_TESTING=1; MOD_CONTEXT7=0; MOD_SEQ_THINK=1; PERM_PRESET=2; PRESET_LOCKED=1 ;;
+  6)  PRESET_NAME="Rust Systems";         LANG_FRAMEWORK="Rust";               PKG_MANAGER="cargo";  MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=0; MOD_SEQ_THINK=0; PERM_PRESET=1; PRESET_LOCKED=1 ;;
+  7)  PRESET_NAME="Go Service";           LANG_FRAMEWORK="Go";                 PKG_MANAGER="go mod"; MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=0; MOD_SEQ_THINK=0; PERM_PRESET=2; PRESET_LOCKED=1 ;;
+  8)  PRESET_NAME="Embedded C/C++";       LANG_FRAMEWORK="C/C++";              PKG_MANAGER="cmake";  MOD_CODE_REVIEW=1; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0; PERM_PRESET=1; PRESET_LOCKED=1 ;;
+  9)  PRESET_NAME="Claude-only Agent";    LANG_FRAMEWORK="Claude (no code)";   PKG_MANAGER="n/a";    MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=1; PERM_PRESET=2; PRESET_LOCKED=1 ;;
+  10) PRESET_NAME="Static Site / Docs";   LANG_FRAMEWORK="Astro or Hugo";      PKG_MANAGER="npm";    MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=1; MOD_SEQ_THINK=0; PERM_PRESET=2; PRESET_LOCKED=1 ;;
+  *)  PRESET_NAME="Custom"; PRESET_LOCKED=0 ;;
+esac
+
+if [ "$PRESET_LOCKED" -eq 1 ]; then
+  info "Preset: $PRESET_NAME → $LANG_FRAMEWORK ($PKG_MANAGER)"
+else
+  read -p "Language/Framework (e.g., TypeScript/Next.js): " LANG_FRAMEWORK
+  read -p "Package manager (e.g., npm, pnpm, pip): " PKG_MANAGER
+fi
+
 echo ""
 echo "  User-facing language (agent output, reports, logs):"
 echo "    1) Korean (한국어)"
@@ -292,10 +334,17 @@ echo "    [2] testing skill      — TDD enforcement"
 echo "    [3] Context7 MCP       — latest library docs auto-injection"
 echo "    [4] Sequential Thinking MCP — structured reasoning chains"
 echo ""
-read -p "  Select [1-4, comma-separated, 'all', or 'none', default: all]: " MODULE_CHOICE
+if [ "$PRESET_LOCKED" -eq 1 ]; then
+  MODULE_CHOICE="__preset__"
+  info "  Modules locked by preset: code-review=$MOD_CODE_REVIEW testing=$MOD_TESTING context7=$MOD_CONTEXT7 seq-think=$MOD_SEQ_THINK"
+else
+  read -p "  Select [1-4, comma-separated, 'all', or 'none', default: all]: " MODULE_CHOICE
+fi
 
 # Parse selection
-if [ -z "$MODULE_CHOICE" ] || [ "$MODULE_CHOICE" = "all" ]; then
+if [ "$MODULE_CHOICE" = "__preset__" ]; then
+  : # already set by preset
+elif [ -z "$MODULE_CHOICE" ] || [ "$MODULE_CHOICE" = "all" ]; then
   MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=1; MOD_SEQ_THINK=1
 elif [ "$MODULE_CHOICE" = "none" ]; then
   MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0
@@ -374,7 +423,12 @@ echo "  [1] Strict  — ask before every tool use (safest)"
 echo "  [2] Standard — allow read-only tools, ask for writes (recommended)"
 echo "  [3] Permissive — allow most tools, ask for destructive ops only"
 echo ""
-read -p "  Select [1-3, default: 2]: " PERM_CHOICE
+if [ "$PRESET_LOCKED" -eq 1 ]; then
+  PERM_CHOICE="$PERM_PRESET"
+  info "  Permissions locked by preset: option $PERM_CHOICE"
+else
+  read -p "  Select [1-3, default: 2]: " PERM_CHOICE
+fi
 
 case "$PERM_CHOICE" in
   1)
@@ -478,6 +532,8 @@ MCP_COUNT=1
 [ "$MOD_SEQ_THINK" -eq 1 ] && { MCP_LIST="$MCP_LIST, sequential-thinking"; MCP_COUNT=$((MCP_COUNT + 1)); }
 
 echo "  Project:     ${PROJECT_NAME:-unnamed}"
+echo "  Preset:      ${PRESET_NAME}"
+echo "  Stack:       ${LANG_FRAMEWORK} (${PKG_MANAGER})"
 echo "  Language:    ${USER_LANG} (user-facing output)"
 echo "  Permissions: ${PERM_LEVEL}"
 echo "  Agents:      3 (orchestrator, executor, quality)"

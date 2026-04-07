@@ -25,9 +25,26 @@ The installer walks you through:
 | Step | What it does |
 |---|---|
 | Project info | Name, language/framework, package manager |
+| Preset | Pick from 10 stack presets or Custom (auto-fills stack + modules + permissions) |
 | Language | User-facing output language (Korean, English, Japanese, Chinese, custom) |
-| Module selection | Choose optional skills and MCP servers |
-| Permission level | Strict / Standard / Permissive tool access |
+| Module selection | Choose optional skills and MCP servers (skipped if preset chosen) |
+| Permission level | Strict / Standard / Permissive tool access (skipped if preset chosen) |
+
+### Project Presets
+
+| # | Preset | Stack | Auto-config |
+|---|---|---|---|
+| 1 | Flutter Mobile App | Dart/Flutter, pub | testing+code-review, Context7 |
+| 2 | Next.js Web App | TypeScript/Next.js, pnpm | testing+code-review, Context7+SeqThink |
+| 3 | Node/TS Backend API | TypeScript/Node, npm | testing+code-review, SeqThink |
+| 4 | Python Backend | Python/FastAPI, uv | testing+code-review, Context7 |
+| 5 | Python Data/ML | Python, uv | testing, SeqThink |
+| 6 | Rust Systems | Rust, cargo | testing+code-review, Strict perms |
+| 7 | Go Service | Go, go mod | testing+code-review |
+| 8 | Embedded C/C++ | C/C++, cmake | code-review only, Strict perms |
+| 9 | Claude-only Agent | no code, content/judgment | no testing, SeqThink |
+| 10 | Static Site / Docs | Astro or Hugo, npm | minimal modules |
+| 11 | Custom | manual entry | (current behavior) |
 
 After setup, start Claude Code with `claude` and the harness takes over.
 

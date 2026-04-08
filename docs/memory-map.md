@@ -33,6 +33,7 @@ type: index
 | computer-use, gui, screenshot, e2e, simulator, ui-testing | integrations | [Computer Use GUI Testing](integrations/computer-use-gui-testing.md) |
 | blueprint, module, analysis, reassemble, code-analysis | patterns | [Module Blueprint System](patterns/module-blueprint-system.md) |
 | codex, external-review, github-pr, openai | integrations | [Codex Code Review](integrations/codex-code-review.md) |
+| error, failure, parse, retry, taxonomy, recovery, unknown, transient | patterns | [Error Handling](patterns/error-handling.md) |
 
 ## Category Index
 | Category | Files | Description |

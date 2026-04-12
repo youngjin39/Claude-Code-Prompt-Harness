@@ -171,15 +171,18 @@ When triggered: report trigger reason + loaded skill(s) (max 3) in one line.
 - **PreCompact**: auto-generate handoff skeleton + reminder.
 - **PreToolUse(Bash|Write|Edit)**: input-stage guardrail. Block destructive patterns + denied paths before tool runs.
 - **PostToolUse(Edit|Write)**: debug statement + credential leak detection.
-- **SessionEnd**: auto-save session snapshot + memory harvesting reminder.
+- **SessionEnd**: auto-save session snapshot + instinct harvest (pattern extraction from session).
 
 ## Failure Handling (JIT)
 On any tool failure, parse error, or unexpected state → Read `docs/patterns/error-handling.md` (Error Taxonomy + Output Parsing Recovery). Never "try again harder" without classification. State Checkpoint protocol lives in `.claude/agents/executor-agent.md`.
 
-## Automatic Memory Harvesting
+## Automatic Memory Harvesting (Instinct Pattern)
 - On task completion **or when a reusable judgment/analysis emerges in conversation**, assess: "Was anything new learned?"
 - If yes → save to docs/{category}/ + update memory-map.md.
 - If no → skip (prevent unnecessary memory bloat).
+- **Instinct categories**: error resolutions, user corrections, framework workarounds, conventions established, approaches confirmed.
+- **Skip**: trivial patterns (typos, one-off fixes). Only save if it helps a future session.
+- **Dedup**: if pattern already exists in lessons.md, increment count (2+ repetitions → rule promotion). Do not create duplicates.
 - **Cascade Update**: on save, check memory-map.md for existing files sharing keywords. If found, review for contradiction/overlap → update or flag. A single new insight may touch multiple files.
 
 ## Quality Checks

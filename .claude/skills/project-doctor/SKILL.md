@@ -49,6 +49,23 @@ allowed-tools: Read, Grep, Glob, Bash
 26. No dangerous shell patterns in skill files (rm -rf /, curl|sh, eval).
 27. .env files listed in .gitignore.
 
+## Context Budget Audit
+28. **CLAUDE.md token estimate**: word count × 1.3. Flag if >300 lines or >4000 estimated tokens.
+29. **Skill token estimate**: for each `.claude/skills/*/SKILL.md`, count lines. Flag if any skill >400 lines. Sum all skills — report total.
+30. **Agent token estimate**: for each `.claude/agents/*.md`, count lines. Flag if any agent >200 lines.
+31. **MCP tool count**: read `.mcp.json` (if exists) + `settings.local.json` allowed tools. Each MCP tool schema ≈ 500 tokens. Flag if total MCP tools >20.
+32. **Always-loaded vs JIT ratio**: count sections in CLAUDE.md that reference `docs/` or `skills/` for JIT loading. Report ratio of inline content vs JIT pointers. Higher JIT ratio = better token efficiency.
+33. **Total session overhead estimate**: sum of CLAUDE.md + agent descriptions + MCP tool schemas. This is the minimum token cost per session before any work begins. Report as absolute number and % of 200K context window.
+
+Thresholds (from ECC context-budget research):
+| Component | Healthy | Warning | Critical |
+|---|---|---|---|
+| CLAUDE.md | <200 lines | 200-300 | >300 |
+| Single skill | <200 lines | 200-400 | >400 |
+| Single agent | <100 lines | 100-200 | >200 |
+| MCP tools total | <10 | 10-20 | >20 |
+| Session overhead | <5% of 200K | 5-10% | >10% |
+
 ## Output
 ```
 ## Project Doctor Report

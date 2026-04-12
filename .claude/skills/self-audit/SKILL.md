@@ -130,6 +130,34 @@ Project: {project name from CLAUDE.md}
 2. ...
 ```
 
+### Phase 6: Skill Stocktake (Quality Audit)
+For each skill in `.claude/skills/*/SKILL.md`:
+
+| Check | Method | Verdict |
+|---|---|---|
+| **Size** | Line count. >400 = oversized, >200 = heavy | Flag |
+| **Usage** | memory-map.md Skill Usage table `count` column. 0 after 30+ days since creation = dormant | Warn |
+| **Overlap** | Compare trigger keywords across all skills. >50% keyword overlap between two skills = potential merge candidate | Flag |
+| **Freshness** | Check if skill references external tools/URLs → verify they still exist (quick WebFetch or which check) | Warn if broken |
+| **Clarity** | Has clear Procedure section? Has explicit Output format? Has Hard Rules? | ⚠️ if missing any |
+
+Verdicts per skill:
+- **Keep** — healthy, actively used, no issues
+- **Improve** — has quality gaps (missing procedure, unclear output, no hard rules)
+- **Update** — references stale tools or outdated patterns
+- **Retire** — dormant + overlaps with another skill (requires user confirmation)
+- **Merge** — >50% keyword overlap with another skill (requires user confirmation)
+
+Output table:
+```
+### Skill Stocktake
+| Skill | Lines | Usage | Overlap | Freshness | Clarity | Verdict |
+|---|---|---|---|---|---|---|
+| {name} | {N} | {count} | {overlap target or —} | ✅/⚠️ | ✅/⚠️ | Keep/Improve/Update/Retire/Merge |
+```
+
+**Important**: Retire and Merge are suggestions only. Never auto-delete skills.
+
 ## Rules
 - Run at least once per month or after major changes.
 - Do not auto-fix — report only. User decides what to act on.

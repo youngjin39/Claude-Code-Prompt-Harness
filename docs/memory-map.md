@@ -15,14 +15,19 @@ type: index
 | Skill | Last Used | Count |
 |---|---|---|
 | brainstorming | — | 0 |
+| browser-automation | — | 0 |
 | code-review | — | 0 |
 | deep-interview | — | 0 |
 | git-commit | — | 0 |
+| graphify | — | 0 |
+| knowledge-ingest | — | 0 |
+| knowledge-lint | — | 0 |
 | project-doctor | 2026-03-24 | 1 |
+| self-audit | — | 0 |
 | testing | — | 0 |
+| ux-ui-design | — | 0 |
 | verification | — | 0 |
 | writing-plans | — | 0 |
-| self-audit | — | 0 |
 
 ## Keyword → File Mapping
 | Keywords | Category | File |
@@ -34,6 +39,7 @@ type: index
 | blueprint, module, analysis, reassemble, code-analysis | patterns | [Module Blueprint System](patterns/module-blueprint-system.md) |
 | codex, external-review, github-pr, openai | integrations | [Codex Code Review](integrations/codex-code-review.md) |
 | error, failure, parse, retry, taxonomy, recovery, unknown, transient | patterns | [Error Handling](patterns/error-handling.md) |
+| context-budget, token, overhead, MCP cost, session overhead, bloat | references | [ECC Context Budget Thresholds](references/ecc-context-budget.md) |
 
 ## Category Index
 | Category | Files | Description |
@@ -44,7 +50,7 @@ type: index
 | domain | (none) | Domain knowledge, business rules |
 | risks | (none) | Known risks, vulnerabilities |
 | integrations | [Computer Use GUI Testing](integrations/computer-use-gui-testing.md), [Codex Code Review](integrations/codex-code-review.md) | External system APIs |
-| references | [Repo Analysis](references/repo-analysis-summary.md) | Reference repo analysis |
+| references | [Repo Analysis](references/repo-analysis-summary.md), [ECC Context Budget](references/ecc-context-budget.md) | Reference repo analysis |
 
 ## Protocols
 - **Search**: Scan keyword table → Read matched file only → If file has `related` field, consider loading related files too → Skip if no match.

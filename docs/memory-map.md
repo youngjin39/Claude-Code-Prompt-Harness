@@ -19,7 +19,7 @@ type: index
 | code-review | — | 0 |
 | deep-interview | — | 0 |
 | git-commit | — | 0 |
-| graphify | — | 0 |
+| code-review-graph | — | 0 |
 | knowledge-ingest | — | 0 |
 | knowledge-lint | — | 0 |
 | project-doctor | 2026-03-24 | 1 |
@@ -40,6 +40,7 @@ type: index
 | codex, external-review, github-pr, openai | integrations | [Codex Code Review](integrations/codex-code-review.md) |
 | error, failure, parse, retry, taxonomy, recovery, unknown, transient | patterns | [Error Handling](patterns/error-handling.md) |
 | context-budget, token, overhead, MCP cost, session overhead, bloat | references | [ECC Context Budget Thresholds](references/ecc-context-budget.md) |
+| mempalace, temporal, knowledge-graph, time-aware, decision-tracking | references | [MemPalace Temporal KG](references/mempalace-temporal-kg.md) |
 
 ## Category Index
 | Category | Files | Description |
@@ -50,7 +51,7 @@ type: index
 | domain | (none) | Domain knowledge, business rules |
 | risks | (none) | Known risks, vulnerabilities |
 | integrations | [Computer Use GUI Testing](integrations/computer-use-gui-testing.md), [Codex Code Review](integrations/codex-code-review.md) | External system APIs |
-| references | [Repo Analysis](references/repo-analysis-summary.md), [ECC Context Budget](references/ecc-context-budget.md) | Reference repo analysis |
+| references | [Repo Analysis](references/repo-analysis-summary.md), [ECC Context Budget](references/ecc-context-budget.md), [MemPalace Temporal KG](references/mempalace-temporal-kg.md) | Reference repo analysis |
 
 ## Protocols
 - **Search**: Scan keyword table → Read matched file only → If file has `related` field, consider loading related files too → Skip if no match.

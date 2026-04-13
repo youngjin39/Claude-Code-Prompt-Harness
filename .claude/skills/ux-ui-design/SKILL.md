@@ -68,6 +68,15 @@ Per screen state from Step 2, produce a low-fidelity wireframe (ASCII box layout
 ### Step 7. Open questions
 List anything unresolved (copy strings, icons, animations, 3rd-party embeds). Do not guess.
 
+**Icon resources** (for development projects needing tech stack icons):
+| Library | Best for | Install |
+|---|---|---|
+| `developer-icons` | React/Next.js, strongest AI/ML coverage (318 icons), TypeScript native | `npm i developer-icons` |
+| `simple-icons` | Maximum brand coverage (1000+), any framework | `npm i simple-icons` |
+| `devicon` | Multiple style variants (color/line/plain), CSS font fallback | CDN or `npm i devicon` |
+
+Flutter/Dart: use SVG assets directly from these repos or devicon CDN — no pub.dev packages available.
+
 ### Step 8. User approval
 Present Steps 1–7 as one report. Wait for explicit user approval. On approval → handoff to `writing-plans`. Never skip to code.
 

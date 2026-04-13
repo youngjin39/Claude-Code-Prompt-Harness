@@ -334,8 +334,8 @@ echo "    [2] testing skill      — TDD enforcement"
 echo "    [3] Context7 MCP       — latest library docs auto-injection"
 echo "    [4] Sequential Thinking MCP — structured reasoning chains"
 echo "    [5] Knowledge Wiki     — LLM Wiki pattern (docs/sources + docs/wiki + ingest/lint skills)"
-echo "    [6] Browser Automation — dev-browser CLI (real Playwright in QuickJS sandbox)"
-echo "    [7] Graphify            — automated knowledge graph for large codebases (71.5x token saving)"
+echo "    [6] Browser Automation — agent-browser CLI (Vercel Labs, accessibility-tree snapshots)"
+echo "    [7] Code Review Graph  — local code knowledge graph + blast-radius analysis (8.2x token saving)"
 echo ""
 if [ "$PRESET_LOCKED" -eq 1 ]; then
   MODULE_CHOICE="__preset__"
@@ -348,11 +348,11 @@ fi
 if [ "$MODULE_CHOICE" = "__preset__" ]; then
   : # already set by preset
 elif [ -z "$MODULE_CHOICE" ] || [ "$MODULE_CHOICE" = "all" ]; then
-  MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=1; MOD_SEQ_THINK=1; MOD_KNOWLEDGE_WIKI=1; MOD_BROWSER=1; MOD_GRAPHIFY=1
+  MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=1; MOD_SEQ_THINK=1; MOD_KNOWLEDGE_WIKI=1; MOD_BROWSER=1; MOD_CODE_GRAPH=1
 elif [ "$MODULE_CHOICE" = "none" ]; then
-  MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0; MOD_KNOWLEDGE_WIKI=0; MOD_BROWSER=0; MOD_GRAPHIFY=0
+  MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0; MOD_KNOWLEDGE_WIKI=0; MOD_BROWSER=0; MOD_CODE_GRAPH=0
 else
-  MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0; MOD_KNOWLEDGE_WIKI=0; MOD_BROWSER=0; MOD_GRAPHIFY=0
+  MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0; MOD_KNOWLEDGE_WIKI=0; MOD_BROWSER=0; MOD_CODE_GRAPH=0
   IFS=',' read -ra MODS <<< "$MODULE_CHOICE"
   for m in "${MODS[@]}"; do
     m=$(echo "$m" | tr -d ' ')
@@ -363,13 +363,13 @@ else
       4) MOD_SEQ_THINK=1 ;;
       5) MOD_KNOWLEDGE_WIKI=1 ;;
       6) MOD_BROWSER=1 ;;
-      7) MOD_GRAPHIFY=1 ;;
+      7) MOD_CODE_GRAPH=1 ;;
     esac
   done
 fi
 MOD_KNOWLEDGE_WIKI=${MOD_KNOWLEDGE_WIKI:-0}
 MOD_BROWSER=${MOD_BROWSER:-0}
-MOD_GRAPHIFY=${MOD_GRAPHIFY:-0}
+MOD_CODE_GRAPH=${MOD_CODE_GRAPH:-0}
 
 # Remove unselected optional skills + update CLAUDE.md references
 if [ "$MOD_CODE_REVIEW" -eq 0 ]; then
@@ -445,21 +445,20 @@ if [ "$MOD_BROWSER" -eq 0 ]; then
   info "  Skipping: Browser Automation"
   rm -rf .claude/skills/browser-automation
 else
-  info "  Including: Browser Automation (dev-browser CLI)"
-  warn "  dev-browser is NOT auto-installed. Run in your terminal after setup:"
-  warn "    npm install -g dev-browser && dev-browser install"
+  info "  Including: Browser Automation (agent-browser CLI)"
+  warn "  agent-browser is NOT auto-installed. Run in your terminal after setup:"
+  warn "    npm install -g agent-browser && agent-browser install"
 fi
 
-if [ "$MOD_GRAPHIFY" -eq 0 ]; then
-  info "  Skipping: Graphify"
-  rm -rf .claude/skills/graphify
+if [ "$MOD_CODE_GRAPH" -eq 0 ]; then
+  info "  Skipping: Code Review Graph"
+  rm -rf .claude/skills/code-review-graph
 else
-  info "  Including: Graphify (automated knowledge graph)"
-  # Ensure cache/ is gitignored
-  grep -qxF "cache/" .gitignore 2>/dev/null || echo "cache/" >> .gitignore
-  warn "  Graphify is NOT auto-installed. Run in your terminal after setup:"
-  warn "    pip install graphifyy && graphify install"
-  warn "    (package name is 'graphifyy' — two y's)"
+  info "  Including: Code Review Graph (blast-radius + MCP 22 tools)"
+  # Ensure .code-review-graph/ is gitignored
+  grep -qxF ".code-review-graph/" .gitignore 2>/dev/null || echo ".code-review-graph/" >> .gitignore
+  warn "  code-review-graph is NOT auto-installed. Run in your terminal after setup:"
+  warn "    pip install code-review-graph && code-review-graph install"
 fi
 
 # Build .mcp.json dynamically
@@ -496,7 +495,7 @@ SELECTED_COUNT=0
 [ "$MOD_SEQ_THINK" -eq 1 ] && SELECTED_COUNT=$((SELECTED_COUNT + 1))
 [ "$MOD_KNOWLEDGE_WIKI" -eq 1 ] && SELECTED_COUNT=$((SELECTED_COUNT + 1))
 [ "$MOD_BROWSER" -eq 1 ] && SELECTED_COUNT=$((SELECTED_COUNT + 1))
-[ "$MOD_GRAPHIFY" -eq 1 ] && SELECTED_COUNT=$((SELECTED_COUNT + 1))
+[ "$MOD_CODE_GRAPH" -eq 1 ] && SELECTED_COUNT=$((SELECTED_COUNT + 1))
 
 echo ""
 info "$SELECTED_COUNT/7 optional modules selected."
@@ -533,14 +532,14 @@ esac
 
 info "Permission level: $PERM_LEVEL"
 
-# Inject dev-browser allow entry if Browser Automation module is enabled
+# Inject agent-browser allow entry if Browser Automation module is enabled
 if [ "$MOD_BROWSER" -eq 1 ] && [ "$PERM_LEVEL" != "permissive" ]; then
   if [ "$PERM_ALLOW" = "[]" ]; then
-    PERM_ALLOW='["Bash(dev-browser *)"]'
+    PERM_ALLOW='["Bash(agent-browser *)"]'
   else
-    PERM_ALLOW="${PERM_ALLOW%]}, \"Bash(dev-browser *)\"]"
+    PERM_ALLOW="${PERM_ALLOW%]}, \"Bash(agent-browser *)\"]"
   fi
-  info "  + allowed: Bash(dev-browser *)"
+  info "  + allowed: Bash(agent-browser *)"
 fi
 
 info "Generating settings.local.json..."
@@ -635,7 +634,7 @@ SKILL_COUNT=8
 [ "$MOD_TESTING" -eq 1 ] && { SKILL_LIST="$SKILL_LIST, testing"; SKILL_COUNT=$((SKILL_COUNT + 1)); }
 [ "$MOD_KNOWLEDGE_WIKI" -eq 1 ] && { SKILL_LIST="$SKILL_LIST, knowledge-ingest, knowledge-lint"; SKILL_COUNT=$((SKILL_COUNT + 2)); }
 [ "$MOD_BROWSER" -eq 1 ] && { SKILL_LIST="$SKILL_LIST, browser-automation"; SKILL_COUNT=$((SKILL_COUNT + 1)); }
-[ "$MOD_GRAPHIFY" -eq 1 ] && { SKILL_LIST="$SKILL_LIST, graphify"; SKILL_COUNT=$((SKILL_COUNT + 1)); }
+[ "$MOD_CODE_GRAPH" -eq 1 ] && { SKILL_LIST="$SKILL_LIST, code-review-graph"; SKILL_COUNT=$((SKILL_COUNT + 1)); }
 
 # Build MCP list for summary
 MCP_LIST=""

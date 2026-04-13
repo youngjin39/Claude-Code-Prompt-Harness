@@ -200,15 +200,23 @@ On any tool failure, parse error, or unexpected state → Read `docs/patterns/er
 - Internal (agent comms, handoffs, docs/, skills, code, commits) → English.
 - English is ~2-3x more token-efficient for same information.
 
+## Surgical Change Rules
+- Do not touch code outside the scope of the request.
+- Do not "improve" adjacent code, comments, or formatting beyond what was asked.
+- Do not refactor code that isn't broken. Working code is not an invitation to rewrite.
+- Dead code discovered during work: report it, do not delete unless explicitly asked.
+- No error handling for scenarios that cannot happen. Trust internal code and framework guarantees. Only validate at system boundaries (user input, external APIs).
+- No speculative abstractions for single-use cases. Three similar lines > a premature helper.
+
 ## Token Efficiency
 - Do not re-read files already read in the current session unless the file may have changed.
 - Do not restate the user's question. Execute immediately.
-- Do not touch code outside the scope of the request.
 - When the user corrects a fact, the correction becomes session ground truth. Do not revert.
 
 ## Principles
 - **Default is no-action.** Do not act without evidence. Unverified conclusions are void.
 - Simplicity first. Minimum impact.
 - Solve root causes. No workarounds.
+- **Goal-driven, not command-driven.** Define success criteria before executing. Loop until criteria are met with evidence. Pass verification targets to sub-agents, not step-by-step instructions. "Make tests pass" > "add validation to line 42".
 - **Prohibition > instruction.** Explicit bans are stronger than vague guidance. When defining behavior, state what is forbidden before what is desired.
 - **No filler.** Ban: sycophantic openers ("Sure!", "Great question!", "Absolutely!"), hollow closings ("I hope this helps!", "Let me know if you need anything!"), "As an AI..." framing, repetition, padding adjectives, hedging phrases. Every sentence must carry information.

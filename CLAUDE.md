@@ -14,189 +14,170 @@
 ```
 .
 ├── CLAUDE.md
+├── AGENTS.md
 ├── .mcp.json
-├── setup.sh             # starter installer
-├── README.md
-├── LICENSE
+├── execute.py
+├── harness/
+│   ├── README.md
+│   └── state/
+├── .codex-sync/         # source -> target manifest and rollout docs
+├── .codex/              # generated Codex config and agents
+├── .agents/             # generated Codex skills
+├── PRD.md               # optional project scope and MVP boundary doc
+├── ARCHITECTURE.md      # project boundaries, wrappers, data flow
+├── ADR.md               # optional decision log for major tradeoffs
+├── UI_GUIDE.md          # optional UI behavior and visual rules
+├── setup.sh
 ├── .claude/
 │   ├── settings.local.json
-│   ├── agents/          # main-orchestrator, quality-agent, executor-agent
-│   ├── hooks/           # session-start, pre-compact, pre-tool-use, post-edit-check, session-end
-│   └── skills/          # 10 skills (see skill trigger table)
+│   ├── agents/
+│   ├── hooks/
+│   └── skills/
 ├── tasks/
-│   ├── plan.md          # current phase summary (compact)
-│   ├── context.md       # decision rationale
-│   ├── checklist.md     # progress tracking
-│   ├── change_log.md    # change history
-│   ├── lessons.md       # failures/successes → rules
-│   ├── cost-log.md      # token usage tracking
-│   ├── handoffs/        # inter-phase handoff documents
-│   ├── sessions/        # session snapshots
-│   └── log/             # completed task archive
-└── docs/                # long-term memory (no decay)
-    ├── memory-map.md    # keyword index
-    ├── architecture/    # system structure
-    ├── decisions/       # ADR + full design archive
-    ├── patterns/        # recurring patterns
-    ├── domain/          # domain knowledge
-    ├── risks/           # risks
-    ├── integrations/    # external integrations
-    └── references/      # reference repo analysis
+│   ├── plan.md
+│   ├── context.md
+│   ├── checklist.md
+│   ├── lessons.md
+│   ├── cost-log.md
+│   ├── change_log.md
+│   ├── handoffs/
+│   ├── log/
+│   └── sessions/
+└── docs/
+    ├── memory-map.md
+    ├── architecture/
+    ├── decisions/
+    ├── domain/
+    ├── integrations/
+    └── operations/
+        ├── claude-runtime.md
+        ├── codex-runtime.md
+        ├── hook-contract.md
+        ├── harness-application.md
+        └── starter-maintenance-mode.md
 ```
 
-## Workflow Pipeline
+## Required Reads
+1. `tasks/plan.md`
+2. `tasks/lessons.md`
+3. `docs/memory-map.md`
+4. `PRD.md` when present and product scope, UX priorities, or MVP boundaries matter
+5. `ARCHITECTURE.md` when wrappers, boundaries, or data flow matter
+6. `ADR.md` when historical decisions or tradeoffs matter
+7. `UI_GUIDE.md` when present and UI behavior, visual rules, or anti-patterns matter
+8. `harness/README.md` when harness runtime commands, incidents, or commit policy matter
+9. `docs/operations/claude-runtime.md` when task flow, hooks, or memory behavior matters
+10. `docs/operations/hook-contract.md` when hook behavior, enforcement boundaries, or Codex parity matters
+11. `docs/operations/harness-application.md` when applying harness techniques across Claude and Codex
+12. `docs/operations/starter-maintenance-mode.md` when the task modifies starter contracts, verifiers, or cross-harness behavior
+13. `docs/integrations/claude-to-codex-derivation.md` when Codex parity or regeneration matters
+14. `docs/integrations/project-family-classification.md` when bootstrapping, surveying, or classifying a new project family
 
-### Ambiguous Request Gate
-If a request contains zero specificity signals (file path, function name, numbered step, error message) → deep-interview.
-Can be bypassed with the `force:` prefix.
+## Workflow
+- 0 specificity signals → `deep-interview`
+- 1~2-step task → direct execution + self-check
+- 3+ step task with unresolved product/design choices → `brainstorming` → `writing-plans` → `executor-agent` → `verification`
+- 3+ step task with concrete scope and no meaningful design fork → `writing-plans` → `executor-agent` → `verification`
+- UI work → `ux-ui-design` before implementation
+- Review request or 4+ issues → `quality-agent`
+- New-project bootstrap or repository onboarding → classify family first using `docs/integrations/project-family-classification.md`, then choose `push/init`, `migrate`, `skip-migrate + profile`, `bootstrap only + boundary`, or `supersede`
 
-### Task Flow
-```
-Request → specificity signals? → none → deep-interview → classify
-  ├─ simple (1~2 steps) → orchestrator executes directly → self-check → done
-  └─ complex (3+ steps) → plan mode
-       brainstorming → writing-plans → execution → verification → done
-```
+## Mode Classification
+- Starter contract / verifier / generated-artifact work → enter Starter Maintenance Mode
+- Claude/Codex boundary or mirroring change → enter Cross-Harness Parity Mode
+- Mode rules live in `docs/operations/starter-maintenance-mode.md`
+- Use the path-trigger catalog in `docs/operations/starter-maintenance-mode.md` for first-pass classification.
 
-### Orchestration Presets
-| Preset | Pipeline |
-|---|---|
-| feature | brainstorming → **ux-ui-design (if UI)** → writing-plans → executor → testing → code-review → verification |
-| bugfix | deep-interview(lite) → executor → testing → verification |
-| refactor | brainstorming → writing-plans → executor → code-review → verification |
-| security | code-review(security) → executor → verification |
+## Agent / Skill / Hook Contract
+- Agents own execution shape:
+  - `main-orchestrator` = classify, choose workflow, decide delegation.
+  - `executor-agent` = execute approved multi-step plans.
+  - `quality-agent` = read-only adversarial review.
+- Skills own task-specific procedure:
+  - Load only the matching generated skill bodies you need.
+  - Prefer workflow skills in canonical order: `deep-interview` → `brainstorming` → `writing-plans` → `verification`.
+  - AI-facing contract text must let the agent identify its current runtime, active mode, enforcement path, and completion gate before acting.
+  - Do not force `brainstorming` for concrete, localized implementation tasks with an obvious path; reserve it for real design forks, new features, architecture changes, or when the user explicitly wants options first.
+  - Use `writing-plans` for any multi-step execution that needs checkpointed steps, even if `brainstorming` is skipped because the design is already clear.
+  - Do an inline self-review before invoking heavier review/delegation loops unless the task is high-risk, broad-scope, or the user explicitly asked for review.
+  - Use `testing`, `code-review`, and `ux-ui-design` as first-class runtime skills, not as optional afterthoughts.
+  - Use optional skills only when the request explicitly matches their trigger.
+- Hooks own automatic enforcement and state:
+  - `SessionStart` loads startup context (`tasks/plan.md`, `tasks/lessons.md`, `docs/memory-map.md`, latest session snapshot when present); treat that context as authoritative, then read more only when the task requires it.
+  - `PreCompact` creates a handoff skeleton before context reduction; review and complete it before compacting. This is advisory; the hook does not block compaction.
+  - `PreToolUse` enforces path safety before edits/commands.
+  - `TddGuard` enforces the test-first rule for edits to existing implementation files when related tests are detectable.
+  - Current hook behavior blocks only when `execute.py related-tests` classifies the target as a source file and finds zero related tests.
+  - `PostToolUse` inspects edits for debug leftovers and credential leaks.
+  - `SessionEnd` saves the latest session snapshot for continuity. This preserves state, not proof of completion.
+- Do not duplicate hook logic in prompts or ad-hoc scripts. Instead, work with the hook contract:
+  - expect guards before editing,
+  - keep `tasks/plan.md` and handoffs current,
+  - do not bypass denied-path or test-first expectations.
+- Codex does not execute Claude hooks natively. Generated Codex artifacts must therefore mirror the same runtime contract explicitly:
+  - read the same startup files, including the latest session snapshot when present,
+  - before invoking compaction, manually create a handoff document in `tasks/handoffs/` mirroring the PreCompact contract,
+  - classify Starter Maintenance Mode and Cross-Harness Parity Mode using the same entry criteria,
+  - name the same blocked-intent set in instruction form: destructive `rm`, protected-branch force push, hook/signing bypass flags, shared-ref history rewrite, piped remote install, `sudo`, writes outside the project, writes to secret material, and writes into `.git` internals,
+  - apply the same test-first rule for edits to existing implementation files when related tests are detectable,
+  - the current Claude hook reaches that boundary by blocking only when `execute.py related-tests` classifies the target as a source file and finds zero related tests,
+  - do not claim hook-driven incident counting for Codex-only sessions unless a Codex workflow explicitly records incidents; otherwise `harness/state/incidents.json` remains Claude-hook state rather than a Codex parity guarantee,
+  - treat post-edit inspection as mandatory review work for debug leftovers and credential leaks,
+  - treat hook-managed files as canonical state,
+  - at session end, manually create a session snapshot in `tasks/sessions/` mirroring the SessionEnd contract,
+  - use generated skills before improvising new procedure.
+  - use verification commands as completion gates when hook enforcement is unavailable.
+  - describe this as manual compliance + verifier-checked contract drift, not native pre-execution blocking or behavioral parity.
 
-### Agent Role Separation
-| Agent | Model | Role | Writes Code |
-|---|---|---|---|
-| main-orchestrator | opus | conversation, judgment, classification, simple task execution | Yes (simple) |
-| executor-agent | sonnet | dedicated sub-agent for complex task code writing | Yes (complex) |
-| quality-agent | sonnet | read-only review. Write/Edit forbidden. | No |
+## Harness Defaults
+- Default runtime = 3 agents + core skills + 6 hooks + `execute.py` state engine.
+- Optional skills, MCP servers, and domain packs are opt-in. Do not assume they exist.
+- Project-specific hard rules must live in project docs such as `PRD.md`, `ARCHITECTURE.md`, `ADR.md`, or `UI_GUIDE.md` when present, or in an explicit `CRITICAL` section here.
 
-### Branching Criteria
-- **Simple (1~2 steps)**: orchestrator executes directly. When executor call overhead exceeds the work involved.
-- **Complex (3+ steps)**: brainstorming → writing-plans → executor → verification pipeline.
-- When criteria are ambiguous, classify as complex (overestimating is safer than underestimating).
-
-### Gate Conditions
-| Phase | Entry | Exit |
-|---|---|---|
-| brainstorming | complex classification | user design approval |
-| writing-plans | brainstorming exit | includes concrete code + commands + expected output |
-| execution | writing-plans exit | all steps complete or 3 failures → STOP |
-| verification | execution exit | verification passed based on execution evidence |
-
-### Built-in Rules
-- brainstorming: must compare 2~3 alternatives with different lenses. Counter-narrative mandatory.
-- ux-ui-design: **hard gate** if the work produces UI. No UI code until Steps 1–7 approved by user.
-- writing-plans: no abstract expressions. Include actual code. Banned: "add tests", "refactor as needed".
-- execution: 3-failure circuit breaker → revisit architecture. Use git worktree for risky changes.
-- verification: "should work", "probably fine" forbidden. Evidence only. Red Team 5Q after gate pass.
-
-## Skill Trigger System (body loaded via Read when triggered)
-
-### Trigger Types
-| Type | How it fires | Example |
-|---|---|---|
-| Keyword | Request contains listed keywords | "test", "review", "commit" |
-| Intent | Inferred user goal | "add feature" → brainstorming, "fix bug" → deep-interview(lite) |
-| File path | Changed/mentioned file matches pattern | `*.test.*` → testing, `*.md` → skip lint |
-| Code pattern | Code contains risky patterns | external input handling → security review |
-
-When triggered: report trigger reason + loaded skill(s) (max 3) in one line.
-
-### Skill Keyword Table
-
-| Keyword | Skill | Path |
-|---|---|---|
-| review, PR, quality, merge check, post-completion | code-review | .claude/skills/code-review/SKILL.md |
-| test, TDD, unit test, integration test | testing | .claude/skills/testing/SKILL.md |
-| commit, git, save changes | git-commit | .claude/skills/git-commit/SKILL.md |
-| diagnose, doctor, health check, status | project-doctor | .claude/skills/project-doctor/SKILL.md |
-| design, brainstorming, architecture, new feature | brainstorming | .claude/skills/brainstorming/SKILL.md |
-| plan, implementation plan, step design | writing-plans | .claude/skills/writing-plans/SKILL.md |
-| verify, done check, proof, self-check | verification | .claude/skills/verification/SKILL.md |
-| interview, requirements, clarify, ambiguous | deep-interview | .claude/skills/deep-interview/SKILL.md |
-| self-audit, compliance, starter check, 자기점검 | self-audit | .claude/skills/self-audit/SKILL.md |
-| ui, ux, screen, wireframe, frontend, design system, 화면, 디자인 | ux-ui-design | .claude/skills/ux-ui-design/SKILL.md |
-
-> On skill trigger: update `last_used` + `count` in docs/memory-map.md Skill Usage table.
-
-## Model Routing
-| Task Type | Model | Rationale |
-|---|---|---|
-| file search, keyword lookup, simple transformation | haiku | mechanical, no judgment needed |
-| code writing, bug fixing, testing | sonnet | implementation capability required |
-| architecture design, planning, review synthesis | opus | complex judgment + context understanding |
-
-## Memory System (3 layers)
-
-### Layer 1: Project Knowledge (docs/) — what we know
-- Long-term memory. No decay. Permanently preserved.
-- Keyword index (memory-map.md) → category → file. Load only what is needed.
-- Max 50 lines per file (exception: `type: archive` files). Frontmatter: title, keywords, related, created, last_used.
-
-### Layer 2: Behavioral Rules (tasks/lessons.md) — what to do / not do
-- Failure/success table → promoted to rule after 2 repetitions.
-- Must be read at session start.
-
-### Layer 3: Session Restore (tasks/sessions/) — ephemeral snapshots
-- What Worked / What Did NOT Work / Decisions / Next Step.
-- Only the most recent snapshot is valid. Older ones are promoted to docs/ or deleted.
-
-### Memory Usage Protocol
-1. Task start: scan memory-map.md keyword table.
-2. If a relevant keyword exists, Read only that file.
-3. If none, skip (token savings).
-4. Task complete: new learnings → save to docs/{category}/ + update index.
-
-## Autonomous Bug Fix
-- Bug report received → investigate and fix without waiting for instructions.
-- Still follows the pipeline: classify → execute → verify. Autonomy applies to initiation, not to skipping gates.
+## Custom Harness Rules
+- No additional project-specific hard rules are active unless they are documented in project docs or in an explicit `CRITICAL` section here.
+- Treat project-only constraints as hard gates: required wrappers, banned libraries, DB schema freeze, API boundaries, migration rules, deployment rules.
+- If requested work conflicts with a documented hard rule, stop and report the conflict instead of improvising.
+- If a domain rule is missing and the work would be risky without it, ask once, then proceed only after the rule is explicit.
 
 ## Context Management
-- Consider /compact at logical transition points: research → planning, debug → feature.
-- Write a handoff to tasks/handoffs/ before compacting.
-- Do not start complex tasks in the last 20% of the context window.
-- **Context recovery**: on session break or compact, re-read plan.md + lessons.md + latest session snapshot → produce 3-line summary → resume from there.
+- Handoffs only. Never pass session history to sub-agents.
+- Before `/compact`, write a handoff in `tasks/handoffs/`.
+- Do not start complex work in the last 20% of context.
 
-### Sub-agent Isolation
-- NEVER pass session history to sub-agents.
-- Extract only the necessary context from the handoff document and pass that.
-- 1 sub-agent = 1 task = minimum context.
-- After sub-agent completes: receive results only. Discard internal process.
+## Codex Derivation Layer
+- `Claude` files are the source of truth.
+- `AGENTS.md`, `.codex/`, and `.agents/` are generated Codex artifacts.
+- Edit source first, then regenerate with `scripts/generate_codex_derivatives.sh`.
 
-## Automation Hooks (.claude/hooks/)
-- **SessionStart**: auto-load plan.md + lessons.md + most recent session.
-- **PreCompact**: auto-generate handoff skeleton + reminder.
-- **PreToolUse(Bash|Write|Edit)**: input-stage guardrail. Block destructive patterns + denied paths before tool runs.
-- **PostToolUse(Edit|Write)**: debug statement + credential leak detection.
-- **SessionEnd**: auto-save session snapshot + instinct harvest (pattern extraction from session).
+## Codex Use Boundary
+- Status: `bootstrap only`, `Codex bootstrap active`, `local use boundary documented`.
+- Read `docs/integrations/codex-use-boundary.md` before broad Codex edits.
+- Codex is safe for source-first work in `CLAUDE.md`, `.claude/`, `scripts/`, `tests/`, `docs/`, `execute.py`, and `harness/`.
+- Do not hand-edit generated `AGENTS.md`, `.codex/`, or `.agents/`; regenerate from source instead.
 
-## Failure Handling (JIT)
-On any tool failure, parse error, or unexpected state → Read `docs/patterns/error-handling.md` (Error Taxonomy + Output Parsing Recovery). Never "try again harder" without classification. State Checkpoint protocol lives in `.claude/agents/executor-agent.md`.
+## Skill Trigger Table
+Core default = `brainstorming`, `code-review`, `deep-interview`, `git-commit`, `project-doctor`, `self-audit`, `testing`, `ux-ui-design`, `verification`, `writing-plans`.
 
-## Automatic Memory Harvesting (Instinct Pattern)
-- On task completion **or when a reusable judgment/analysis emerges in conversation**, assess: "Was anything new learned?"
-- If yes → save to docs/{category}/ + update memory-map.md.
-- If no → skip (prevent unnecessary memory bloat).
-- **Instinct categories**: error resolutions, user corrections, framework workarounds, conventions established, approaches confirmed.
-- **Skip**: trivial patterns (typos, one-off fixes). Only save if it helps a future session.
-- **Dedup**: if pattern already exists in lessons.md, increment count (2+ repetitions → rule promotion). Do not create duplicates.
-- **Cascade Update**: on save, check memory-map.md for existing files sharing keywords. If found, review for contradiction/overlap → update or flag. A single new insight may touch multiple files.
-
-## Quality Checks
-- Record every change in change_log.md.
-- After completion, run lint/static analysis. Fix 0~3 errors immediately; 4+ errors → quality-agent.
-- Self-check: error handling + security on the 2 most recently modified files.
-
-## Project Management
-- At start, read plan + lessons (SessionStart hook injects automatically). Checklist via manual Read.
-- Before proceeding with changes, update plan and checklist.
-- On feature completion, archive to tasks/log/.
+| Intent | Skill | Path |
+|---|---|---|
+| design, architecture, new feature | brainstorming | .claude/skills/brainstorming/SKILL.md |
+| plan, step design | writing-plans | .claude/skills/writing-plans/SKILL.md |
+| verify, proof, self-check | verification | .claude/skills/verification/SKILL.md |
+| interview, clarify, ambiguous | deep-interview | .claude/skills/deep-interview/SKILL.md |
+| commit, git, save changes | git-commit | .claude/skills/git-commit/SKILL.md |
+| review, PR, quality | code-review | .claude/skills/code-review/SKILL.md |
+| audit, compliance, starter check | self-audit | .claude/skills/self-audit/SKILL.md |
+| test, TDD, unit test | testing | .claude/skills/testing/SKILL.md |
+| diagnose, doctor, health check | project-doctor | .claude/skills/project-doctor/SKILL.md |
+| ui, ux, screen, frontend | ux-ui-design | .claude/skills/ux-ui-design/SKILL.md |
 
 ## Language Protocol
 - User-facing output (reports, task logs) → Korean.
+- User-facing reports: group by purpose and label each block, e.g. `Purpose / Evidence / Action`.
+- User-facing progress updates must stay scannable: separate `Progress / Result / Discussion` when relevant.
+- Report progress, results, and discussion points explicitly, but keep each block short. Do not dump internal reasoning logs.
+- Use line breaks or bullets so the user can scan updates quickly. Avoid wall-of-text status messages.
 - Internal (agent comms, handoffs, docs/, skills, code, commits) → English.
 - English is ~2-3x more token-efficient for same information.
 
@@ -214,9 +195,9 @@ On any tool failure, parse error, or unexpected state → Read `docs/patterns/er
 - When the user corrects a fact, the correction becomes session ground truth. Do not revert.
 
 ## Principles
-- **Default is no-action.** Do not act without evidence. Unverified conclusions are void.
-- Simplicity first. Minimum impact.
-- Solve root causes. No workarounds.
-- **Goal-driven, not command-driven.** Define success criteria before executing. Loop until criteria are met with evidence. Pass verification targets to sub-agents, not step-by-step instructions. "Make tests pass" > "add validation to line 42".
-- **Prohibition > instruction.** Explicit bans are stronger than vague guidance. When defining behavior, state what is forbidden before what is desired.
-- **No filler.** Ban: sycophantic openers ("Sure!", "Great question!", "Absolutely!"), hollow closings ("I hope this helps!", "Let me know if you need anything!"), "As an AI..." framing, repetition, padding adjectives, hedging phrases. Every sentence must carry information.
+- **Evidence first.** Default is no-action. Define success criteria first and act only on verified evidence.
+- **Self-recognition first.** The AI must be able to tell which runtime it is in, which mode is active, what enforces policy, and what proves completion before it starts acting.
+- **Minimum change.** Simplicity first. Solve root causes with the smallest effective change. No workarounds.
+- **Goal-driven.** Optimize for the outcome, not the literal command. Give sub-agents verification targets, not step-by-step micromanagement.
+- **Prohibition > instruction.** State bans before desired behavior.
+- **No filler.** No flattery, hedging, repetition, or padding. Every sentence must add information.

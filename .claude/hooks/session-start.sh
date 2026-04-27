@@ -1,5 +1,5 @@
 #!/bin/bash
-# SessionStart hook: inject plan + lessons into context
+# SessionStart hook: inject startup contract into context
 # stdout → Claude's context window
 
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
@@ -16,6 +16,13 @@ echo ""
 if [ -f "$PROJECT_DIR/tasks/lessons.md" ]; then
   echo "--- lessons.md ---"
   head -50 "$PROJECT_DIR/tasks/lessons.md"
+fi
+
+echo ""
+
+if [ -f "$PROJECT_DIR/docs/memory-map.md" ]; then
+  echo "--- memory-map.md ---"
+  head -80 "$PROJECT_DIR/docs/memory-map.md"
 fi
 
 echo ""

@@ -26,3 +26,4 @@
 - Use canonical skill names in all config files. Never abbreviate. ("plans" drift: 4+ occurrences)
 - Keyword indexes require bidirectional sync: index → file AND file → index. (3+ occurrences)
 - Deduplicate cross-file tables with "See X" pointers. Copies always drift. (presets: 2+ occurrences)
+- User-facing updates must be scannable: report progress, result, and discussion explicitly, but keep them in short labeled blocks. No wall-of-text progress logs.

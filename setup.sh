@@ -31,6 +31,7 @@ load_messages_en() {
   MSG_ERR_GIT_NOT_FOUND="git is not installed."
   MSG_ERR_CLONE_FAILED="${RED}ERROR: Failed to clone starter repo. Check network connection.${NC}"
   MSG_ERR_CLAUDE_DIR_EXISTS="${RED}ERROR: .claude/ directory already exists. Remove it first or run from an empty directory.${NC}"
+  MSG_ERR_CODEX_SCRIPT_MISSING="${RED}ERROR: Codex derivation script is missing from the starter.${NC}"
 
   # Info / progress
   MSG_INFO_CLONING="Cloning mir-claude-starter..."
@@ -41,13 +42,22 @@ load_messages_en() {
   MSG_INFO_CONF_MODULES="Configuring optional modules..."
   MSG_INFO_PERM_LEVEL="Permission level: "
   MSG_INFO_GEN_SETTINGS="Generating settings.local.json..."
+  MSG_INFO_GEN_CODEX="Generating Codex derived files..."
   MSG_INFO_GIT_INIT="Initializing git repository..."
 
   # Section headers
+  MSG_HDR_TARGET="--- Install Target ---"
   MSG_HDR_PROJECT_CONFIG="--- Project Configuration ---"
   MSG_HDR_PRESET="--- Project Preset ---"
   MSG_HDR_MODULE="--- Module Selection ---"
   MSG_HDR_PERM="--- Permission Level ---"
+
+  # Target section
+  MSG_TARGET_INTRO="  Choose which agent environment to prepare."
+  MSG_TARGET_1="   [1] Claude only        — starter source files only"
+  MSG_TARGET_2="   [2] Codex only         — keep Claude source + generate Codex layer"
+  MSG_TARGET_3="   [3] Both               — Claude source + generated Codex layer"
+  MSG_TARGET_SELECT_PROMPT="  Select [1-3, default: 1]: "
 
   # Project config prompts
   MSG_PROJECT_NAME_PROMPT="Project name: "
@@ -77,7 +87,7 @@ load_messages_en() {
   MSG_MOD_CORE_SKILLS="    ✓ 6 skills: brainstorming, writing-plans, verification,"
   MSG_MOD_CORE_SKILLS2="                 deep-interview, git-commit, project-doctor"
   MSG_MOD_CORE_AGENTS="    ✓ 3 agents: orchestrator, executor, quality"
-  MSG_MOD_CORE_HOOKS="    ✓ 5 hooks:  session-start, pre-compact, pre-tool-use, post-edit-check, session-end"
+  MSG_MOD_CORE_HOOKS="    ✓ 6 hooks:  session-start, pre-compact, pre-tool-use, tdd-guard, post-edit-check, session-end"
   MSG_MOD_CORE_WEB="    ✓ Web:      built-in WebFetch / WebSearch (no MCP needed)"
   MSG_MOD_OPTIONAL_HEADER="  Optional modules:"
   MSG_MOD_1="    [1] code-review skill  — PR/quality review"
@@ -87,7 +97,7 @@ load_messages_en() {
   MSG_MOD_5="    [5] Knowledge Wiki     — LLM Wiki pattern (docs/sources + docs/wiki + ingest/lint skills)"
   MSG_MOD_6="    [6] Browser Automation — agent-browser CLI (Vercel Labs, accessibility-tree snapshots)"
   MSG_MOD_7="    [7] Code Review Graph  — local code knowledge graph + blast-radius analysis (8.2x token saving)"
-  MSG_MOD_SELECT_PROMPT="  Select [1-7, comma-separated, 'all', or 'none', default: all]: "
+  MSG_MOD_SELECT_PROMPT="  Select [1-7, comma-separated, 'all', or 'none', default: none]: "
   MSG_MOD_SKIP_CODE_REVIEW="  Skipping: code-review skill"
   MSG_MOD_INC_CODE_REVIEW="  Including: code-review skill"
   MSG_MOD_SKIP_TESTING="  Skipping: testing skill"
@@ -120,6 +130,7 @@ load_messages_en() {
   MSG_SUM_HEADER_LINE="${GREEN}========================================${NC}"
   MSG_SUM_HEADER_TEXT="${GREEN}  Setup complete!${NC}"
   MSG_SUM_PROJECT="  Project:    "
+  MSG_SUM_TARGET="  Target:     "
   MSG_SUM_PRESET="  Preset:     "
   MSG_SUM_STACK="  Stack:      "
   MSG_SUM_LANGUAGE="  Language:   "
@@ -127,14 +138,17 @@ load_messages_en() {
   MSG_SUM_AGENTS="  Agents:      3 (orchestrator, executor, quality)"
   MSG_SUM_SKILLS="  Skills:     "
   MSG_SUM_MCP="  MCP:        "
-  MSG_SUM_HOOKS="  Hooks:       5 (SessionStart, PreCompact, PreToolUse, PostToolUse, SessionEnd)"
+  MSG_SUM_HOOKS="  Hooks:       6 (SessionStart, PreCompact, PreToolUse, TddGuard, PostToolUse, SessionEnd)"
   MSG_SUM_TASKS_NOTE="  Note: tasks/ files are local working memory (gitignored by default)."
 
   # Next steps
   MSG_NEXT_HEADER="  Next steps:"
   MSG_NEXT_2="    2. Review CLAUDE.md and customize Build & Run section"
   MSG_NEXT_3="    3. Configure tool permissions in .claude/settings.local.json"
-  MSG_NEXT_4="    4. Start Claude Code: claude"
+  MSG_NEXT_4_CLAUDE="    4. Start Claude Code: claude"
+  MSG_NEXT_4_CODEX="    4. Start Codex: codex"
+  MSG_NEXT_5_CODEX_BOTH="    5. Start Codex: codex"
+  MSG_NEXT_6_BOTH="    6. Switch between Claude and Codex in the same repo after regeneration checks"
   MSG_NEXT_OPT_HEADER="  Optional:"
   MSG_NEXT_OPT_SKILLS="    - Add domain skills to .claude/skills/"
   MSG_NEXT_OPT_REMOTE="    - Connect to remote: git remote add origin <url> && git push -u origin main"
@@ -149,6 +163,7 @@ load_messages_ko() {
   MSG_ERR_GIT_NOT_FOUND="git이 설치되어 있지 않습니다."
   MSG_ERR_CLONE_FAILED="${RED}ERROR: 스타터 레포 클론에 실패했습니다. 네트워크 연결을 확인하세요.${NC}"
   MSG_ERR_CLAUDE_DIR_EXISTS="${RED}ERROR: .claude/ 디렉토리가 이미 존재합니다. 먼저 삭제하거나 빈 디렉토리에서 실행하세요.${NC}"
+  MSG_ERR_CODEX_SCRIPT_MISSING="${RED}ERROR: 스타터에 Codex 파생 스크립트가 없습니다.${NC}"
 
   # Info / progress
   MSG_INFO_CLONING="mir-claude-starter 클론 중..."
@@ -159,13 +174,22 @@ load_messages_ko() {
   MSG_INFO_CONF_MODULES="선택 모듈 구성 중..."
   MSG_INFO_PERM_LEVEL="권한 레벨: "
   MSG_INFO_GEN_SETTINGS="settings.local.json 생성 중..."
+  MSG_INFO_GEN_CODEX="Codex 파생 파일 생성 중..."
   MSG_INFO_GIT_INIT="git 레포지토리 초기화 중..."
 
   # Section headers
+  MSG_HDR_TARGET="--- 설치 대상 ---"
   MSG_HDR_PROJECT_CONFIG="--- 프로젝트 설정 ---"
   MSG_HDR_PRESET="--- 프로젝트 프리셋 ---"
   MSG_HDR_MODULE="--- 모듈 선택 ---"
   MSG_HDR_PERM="--- 권한 레벨 ---"
+
+  # Target section
+  MSG_TARGET_INTRO="  어떤 에이전트 환경을 준비할지 선택하세요."
+  MSG_TARGET_1="   [1] Claude 전용        — 스타터 원본만 설치"
+  MSG_TARGET_2="   [2] Codex 전용         — Claude 원본 유지 + Codex 레이어 생성"
+  MSG_TARGET_3="   [3] 둘 다              — Claude 원본 + Codex 레이어 생성"
+  MSG_TARGET_SELECT_PROMPT="  선택 [1-3, 기본값: 1]: "
 
   # Project config prompts
   MSG_PROJECT_NAME_PROMPT="프로젝트 이름: "
@@ -195,7 +219,7 @@ load_messages_ko() {
   MSG_MOD_CORE_SKILLS="    ✓ 스킬 6개: brainstorming, writing-plans, verification,"
   MSG_MOD_CORE_SKILLS2="                 deep-interview, git-commit, project-doctor"
   MSG_MOD_CORE_AGENTS="    ✓ 에이전트 3개: orchestrator, executor, quality"
-  MSG_MOD_CORE_HOOKS="    ✓ 훅 5개:  session-start, pre-compact, pre-tool-use, post-edit-check, session-end"
+  MSG_MOD_CORE_HOOKS="    ✓ 훅 6개:  session-start, pre-compact, pre-tool-use, tdd-guard, post-edit-check, session-end"
   MSG_MOD_CORE_WEB="    ✓ 웹:      내장 WebFetch / WebSearch (MCP 불필요)"
   MSG_MOD_OPTIONAL_HEADER="  선택 모듈:"
   MSG_MOD_1="    [1] code-review 스킬  — PR/품질 리뷰"
@@ -205,7 +229,7 @@ load_messages_ko() {
   MSG_MOD_5="    [5] Knowledge Wiki     — LLM 위키 패턴 (docs/sources + docs/wiki + ingest/lint 스킬)"
   MSG_MOD_6="    [6] Browser Automation — agent-browser CLI (Vercel Labs, 접근성 트리 스냅샷)"
   MSG_MOD_7="    [7] Code Review Graph  — 로컬 코드 지식 그래프 + blast-radius 분석 (토큰 8.2x 절감)"
-  MSG_MOD_SELECT_PROMPT="  선택 [1-7, 쉼표 구분, 'all', 'none', 기본값: all]: "
+  MSG_MOD_SELECT_PROMPT="  선택 [1-7, 쉼표 구분, 'all', 'none', 기본값: none]: "
   MSG_MOD_SKIP_CODE_REVIEW="  code-review 스킬 제외"
   MSG_MOD_INC_CODE_REVIEW="  code-review 스킬 포함"
   MSG_MOD_SKIP_TESTING="  testing 스킬 제외"
@@ -238,6 +262,7 @@ load_messages_ko() {
   MSG_SUM_HEADER_LINE="${GREEN}========================================${NC}"
   MSG_SUM_HEADER_TEXT="${GREEN}  설정 완료!${NC}"
   MSG_SUM_PROJECT="  프로젝트:   "
+  MSG_SUM_TARGET="  대상:       "
   MSG_SUM_PRESET="  프리셋:     "
   MSG_SUM_STACK="  스택:       "
   MSG_SUM_LANGUAGE="  출력 언어:  "
@@ -245,14 +270,17 @@ load_messages_ko() {
   MSG_SUM_AGENTS="  에이전트:    3개 (orchestrator, executor, quality)"
   MSG_SUM_SKILLS="  스킬:       "
   MSG_SUM_MCP="  MCP:        "
-  MSG_SUM_HOOKS="  훅:          5개 (SessionStart, PreCompact, PreToolUse, PostToolUse, SessionEnd)"
+  MSG_SUM_HOOKS="  훅:          6개 (SessionStart, PreCompact, PreToolUse, TddGuard, PostToolUse, SessionEnd)"
   MSG_SUM_TASKS_NOTE="  참고: tasks/ 파일은 로컬 작업 메모리입니다 (기본적으로 gitignore 처리)."
 
   # Next steps
   MSG_NEXT_HEADER="  다음 단계:"
   MSG_NEXT_2="    2. CLAUDE.md 검토 후 Build & Run 섹션 커스터마이징"
   MSG_NEXT_3="    3. .claude/settings.local.json에서 도구 권한 설정"
-  MSG_NEXT_4="    4. Claude Code 시작: claude"
+  MSG_NEXT_4_CLAUDE="    4. Claude Code 시작: claude"
+  MSG_NEXT_4_CODEX="    4. Codex 시작: codex"
+  MSG_NEXT_5_CODEX_BOTH="    5. Codex 시작: codex"
+  MSG_NEXT_6_BOTH="    6. 재생성 확인 후 같은 저장소에서 Claude와 Codex를 번갈아 사용"
   MSG_NEXT_OPT_HEADER="  선택 사항:"
   MSG_NEXT_OPT_SKILLS="    - 도메인 스킬 추가: .claude/skills/"
   MSG_NEXT_OPT_REMOTE="    - 원격 연결: git remote add origin <url> && git push -u origin main"
@@ -288,6 +316,27 @@ esac
 
 echo ""
 
+# --- Target selection ---
+echo -e "${YELLOW}$MSG_HDR_TARGET${NC}"
+echo "$MSG_TARGET_INTRO"
+echo ""
+echo "$MSG_TARGET_1"
+echo "$MSG_TARGET_2"
+echo "$MSG_TARGET_3"
+echo ""
+read -p "$MSG_TARGET_SELECT_PROMPT" TARGET_CHOICE
+
+case "${TARGET_CHOICE:-1}" in
+  2) INSTALL_TARGET="codex" ;;
+  3) INSTALL_TARGET="both" ;;
+  *) INSTALL_TARGET="claude" ;;
+esac
+
+INCLUDE_CODEX_LAYER=0
+if [ "$INSTALL_TARGET" = "codex" ] || [ "$INSTALL_TARGET" = "both" ]; then
+  INCLUDE_CODEX_LAYER=1
+fi
+
 # --- Step 1: Clone ---
 info "$MSG_INFO_CLONING"
 git clone --depth 1 "$REPO_URL" "$STARTER_DIR" || { echo -e "$MSG_ERR_CLONE_FAILED"; exit 1; }
@@ -304,10 +353,16 @@ if [ -d ".claude" ]; then
 fi
 
 mv "$STARTER_DIR"/.claude .
+mv "$STARTER_DIR"/harness .
 mv "$STARTER_DIR"/.gitignore .
 mv "$STARTER_DIR"/CLAUDE.md .
+mv "$STARTER_DIR"/execute.py .
 mv "$STARTER_DIR"/LICENSE .
 mv "$STARTER_DIR"/docs .
+if [ "$INCLUDE_CODEX_LAYER" -eq 1 ]; then
+  mv "$STARTER_DIR"/.codex-sync .
+  mv "$STARTER_DIR"/scripts .
+fi
 # Skip README.md (user will create their own), setup.sh (this script)
 # Skip .mcp.json (generated in module selection step)
 
@@ -421,6 +476,218 @@ type: index
 MEMEOF
 # Replace SETUP_DATE with actual date
 SETUP_DATE=$(date +%Y-%m-%d) perl -pi -e 's/SETUP_DATE/$ENV{SETUP_DATE}/g' docs/memory-map.md
+
+cat > PRD.md << 'EOF'
+# PRD
+
+## Purpose
+- Define what the product is, who it is for, and what must ship first.
+- Prevent scope drift during AI-assisted development.
+
+## Product Summary
+- Product name:
+- One-line value proposition:
+- Primary user:
+- Primary job-to-be-done:
+
+## UX Priorities
+- Highest-priority user flow:
+- What must feel fast, clear, and trustworthy:
+- What user confusion is unacceptable:
+- Accessibility baseline:
+- Mobile/Desktop priority:
+
+## MVP Scope
+- Must have:
+- Should have:
+- Explicitly out of scope:
+
+## Functional Requirements
+| ID | Requirement | Why It Exists | Acceptance Signal |
+|---|---|---|---|
+| FR-1 |  |  |  |
+
+## Non-Functional Requirements
+| ID | Requirement | Target |
+|---|---|---|
+| NFR-1 | Performance |  |
+| NFR-2 | Reliability |  |
+| NFR-3 | Security |  |
+| NFR-4 | Privacy |  |
+
+## Edge Cases
+- Empty state:
+- First-run onboarding:
+- Slow network:
+- Offline or degraded backend:
+- Partial failure:
+- Permission denied:
+- Duplicate submission:
+- Invalid input:
+- Rate limit:
+
+## Error Handling
+- User-visible errors must be actionable, short, and recovery-oriented.
+- Do not expose internal stack traces or vendor-only wording in the UI.
+- Define retryable vs non-retryable failures before implementation.
+
+## Success Metrics
+- Task success metric:
+- UX quality metric:
+- Reliability metric:
+
+## Open Questions
+- 
+EOF
+
+cat > ARCHITECTURE.md << 'EOF'
+# ARCHITECTURE
+
+## Purpose
+- Define how the system is built and which implementation patterns are mandatory.
+
+## System Shape
+- Runtime(s):
+- Frontend:
+- Backend:
+- Storage:
+- External integrations:
+
+## Directory Rules
+| Area | Responsibility | Allowed Dependencies | Forbidden Dependencies |
+|---|---|---|---|
+| app/ |  |  |  |
+
+## Data Flow
+1. User input enters at:
+2. Validation happens at:
+3. Business logic happens at:
+4. External API calls happen through:
+5. Persistence happens at:
+6. User-visible errors are mapped at:
+
+## Hard Constraints
+- Required API wrapper:
+- Banned libraries:
+- DB schema change policy:
+- State management policy:
+- Logging policy:
+- Feature flag policy:
+
+## Patterns To Use
+- Preferred module structure:
+- Error handling boundary:
+- Async/concurrency pattern:
+- Test layering:
+
+## Patterns To Avoid
+- Direct vendor SDK calls outside wrappers
+- Cross-layer imports that bypass the intended boundary
+- Hidden global state
+- Schema changes without ADR and migration review
+
+## Security Boundaries
+- Auth/authz entry points:
+- Secret handling:
+- PII handling:
+- Audit logging:
+
+## Failure Modes
+- Upstream timeout:
+- Upstream invalid response:
+- Stale cache:
+- Duplicate writes:
+- Partial transaction:
+- Background job retry storm:
+
+## Verification
+- Required commands:
+- Required tests before merge:
+- Required manual checks:
+EOF
+
+cat > ADR.md << 'EOF'
+# ADR
+
+## Purpose
+- Record architectural decisions in short, reviewable entries.
+
+## Entry Template
+### ADR-000
+- Status: Proposed | Accepted | Superseded
+- Context: What problem or constraint forced a decision?
+- Decision: What was chosen?
+- Why: Why this option won?
+- Tradeoff: What was rejected or made harder?
+- Operational Impact: Migration, testing, rollback, observability implications.
+
+## Decision Log
+### ADR-001
+- Status:
+- Context:
+- Decision:
+- Why:
+- Tradeoff:
+- Operational Impact:
+EOF
+
+cat > UI_GUIDE.md << 'EOF'
+# UI_GUIDE
+
+## Purpose
+- Define how the product should look, feel, and communicate.
+- Keep AI-generated UI aligned with the intended user experience.
+
+## UX Principles
+- Prioritize clarity over visual novelty when the two conflict.
+- Every primary screen should make the next action obvious within 3 seconds.
+- Error, loading, and empty states are part of the product, not polish.
+
+## Visual Direction
+- Brand adjectives:
+- Typography:
+- Color palette:
+- Spacing system:
+- Corner radius / border style:
+- Motion style:
+
+## Component Rules
+- Buttons:
+- Forms:
+- Tables/lists:
+- Modals/drawers:
+- Notifications/toasts:
+- Navigation:
+
+## States Required On Every Important Screen
+- Initial load
+- Empty state
+- Partial data
+- Validation failure
+- Server failure
+- Slow response
+- Success confirmation
+
+## UX Anti-Patterns
+- Glassmorphism by default
+- Purple gradient hero text by default
+- Neon glow as primary emphasis
+- Placeholder copy left in production flows
+- Auto-submitting destructive actions without confirmation
+
+## Accessibility
+- Minimum contrast target:
+- Keyboard navigation requirement:
+- Screen reader requirement:
+- Focus treatment:
+- Reduced motion behavior:
+
+## Content Rules
+- Tone:
+- CTA style:
+- Error copy style:
+- Confirmation copy style:
+EOF
 
 # --- Step 4: Initialize tasks/ ---
 info "$MSG_INFO_INIT_TASKS"
@@ -588,10 +855,10 @@ fi
 # Parse selection
 if [ "$MODULE_CHOICE" = "__preset__" ]; then
   : # already set by preset
-elif [ -z "$MODULE_CHOICE" ] || [ "$MODULE_CHOICE" = "all" ]; then
-  MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=1; MOD_SEQ_THINK=1; MOD_KNOWLEDGE_WIKI=1; MOD_BROWSER=1; MOD_CODE_GRAPH=1
-elif [ "$MODULE_CHOICE" = "none" ]; then
+elif [ -z "$MODULE_CHOICE" ] || [ "$MODULE_CHOICE" = "none" ]; then
   MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0; MOD_KNOWLEDGE_WIKI=0; MOD_BROWSER=0; MOD_CODE_GRAPH=0
+elif [ "$MODULE_CHOICE" = "all" ]; then
+  MOD_CODE_REVIEW=1; MOD_TESTING=1; MOD_CONTEXT7=1; MOD_SEQ_THINK=1; MOD_KNOWLEDGE_WIKI=1; MOD_BROWSER=1; MOD_CODE_GRAPH=1
 else
   MOD_CODE_REVIEW=0; MOD_TESTING=0; MOD_CONTEXT7=0; MOD_SEQ_THINK=0; MOD_KNOWLEDGE_WIKI=0; MOD_BROWSER=0; MOD_CODE_GRAPH=0
   IFS=',' read -ra MODS <<< "$MODULE_CHOICE"
@@ -825,6 +1092,17 @@ cat > .claude/settings.local.json << SETEOF
             "statusMessage": "Input-stage guardrail..."
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"\$CLAUDE_PROJECT_DIR/.claude/hooks/tdd-guard.sh\"",
+            "timeout": 10,
+            "statusMessage": "Checking related tests..."
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -856,6 +1134,15 @@ cat > .claude/settings.local.json << SETEOF
 }
 SETEOF
 
+if [ "$INCLUDE_CODEX_LAYER" -eq 1 ]; then
+  info "$MSG_INFO_GEN_CODEX"
+  if [ ! -f "scripts/generate_codex_derivatives.sh" ]; then
+    echo -e "$MSG_ERR_CODEX_SCRIPT_MISSING"
+    exit 1
+  fi
+  CODEX_DERIVATION_PROFILE=core bash scripts/generate_codex_derivatives.sh
+fi
+
 # --- Step 7: Git init ---
 info "$MSG_INFO_GIT_INIT"
 git init -q
@@ -885,6 +1172,7 @@ MCP_COUNT=0
 [ "$MCP_COUNT" -eq 0 ] && MCP_LIST="$MSG_MCP_NONE"
 
 echo "$MSG_SUM_PROJECT${PROJECT_NAME:-unnamed}"
+echo "$MSG_SUM_TARGET${INSTALL_TARGET}"
 echo "$MSG_SUM_PRESET${PRESET_NAME}"
 echo "$MSG_SUM_STACK${LANG_FRAMEWORK} (${PKG_MANAGER})"
 echo "$MSG_SUM_LANGUAGE${USER_LANG}"
@@ -900,7 +1188,15 @@ echo "$MSG_NEXT_HEADER"
 echo "    1. cd $(pwd)"
 echo "$MSG_NEXT_2"
 echo "$MSG_NEXT_3"
-echo "$MSG_NEXT_4"
+if [ "$INSTALL_TARGET" = "claude" ]; then
+  echo "$MSG_NEXT_4_CLAUDE"
+elif [ "$INSTALL_TARGET" = "codex" ]; then
+  echo "$MSG_NEXT_4_CODEX"
+else
+  echo "$MSG_NEXT_4_CLAUDE"
+  echo "$MSG_NEXT_5_CODEX_BOTH"
+  echo "$MSG_NEXT_6_BOTH"
+fi
 echo ""
 echo "$MSG_NEXT_OPT_HEADER"
 echo "$MSG_NEXT_OPT_SKILLS"

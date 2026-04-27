@@ -1,14 +1,24 @@
 ---
 name: brainstorming
-description: "Design enforcement. Hard gate before coding.\n\nTrigger: design, brainstorming, architecture, new feature"
+description: "Design exploration for real forks. Required before coding only when meaningful design choices exist.\n\nTrigger: design, brainstorming, architecture, new feature"
 ---
 
 # Brainstorming
 
 <HARD-GATE>
-No code without passing this stage.
-Implementation without design approval is forbidden.
+When this skill is triggered, no code without passing this stage.
+If exploration shows there is no meaningful fork, mark direct-execution-safe and exit.
 </HARD-GATE>
+
+## Use When
+- New feature, architecture change, or UI flow with real product/design choices
+- User explicitly asks for options, tradeoffs, or recommendation first
+- Multiple plausible approaches exist and blast radius differs materially
+
+## Do Not Use When
+- The task is a concrete, localized implementation with an obvious path
+- The user already approved a design or handed over an implementation-ready plan
+- The request is primarily execution, testing, or verification rather than option exploration
 
 ## Procedure
 1. Analyze request: what must be achieved?
@@ -23,6 +33,7 @@ Implementation without design approval is forbidden.
 
 ## Exit Condition
 - User approves design → proceed to writing-plans.
+- If exploration proves there is no meaningful design fork, mark direct-execution-safe and proceed without inventing fake alternatives.
 
 ## Banned Patterns
 - Presenting alternatives that differ only in implementation detail (same philosophy = same option).

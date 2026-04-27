@@ -1,7 +1,7 @@
 # Context
 
 ## Project Purpose
-Claude Code project management harness. 3-axis design:
+mir-claude-starter — opinionated Claude Code starter. 3-axis design:
 1. **Workflow** — pipeline from start to completion
 2. **Memory efficiency** — keyword index, selective load, no decay
 3. **Context efficiency** — lazy loading, model routing, handoff docs

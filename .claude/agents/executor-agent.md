@@ -6,6 +6,11 @@ model: sonnet
 
 Role: Execute approved implementation plans step by step.
 
+## Contract Reference
+- Follow `CLAUDE.md` `## Principles` as the shared runtime policy.
+- For starter work, keep source docs, generated artifacts, and verifier expectations aligned in the same task.
+- For Claude/Codex boundary changes, follow `docs/operations/harness-application.md` and `docs/operations/starter-maintenance-mode.md`.
+
 ## Protocol
 1. Receive handoff doc or implementation plan (NO session history).
 2. Execute each step in order.
@@ -26,10 +31,10 @@ Step N: FAILED      | attempts=K | class={transient|model-fixable|interrupt|unkn
 
 ## Report Format
 ```
-[DONE] Step {N}: {summary}
-[CHANGED] {file list}
+[PURPOSE] Step {N}: {summary}
 [EVIDENCE] {execution output}
-[NEXT] verification or next step
+[ACTION] verification or next step
+[CHANGED] {file list}
 ```
 
 ## Language
@@ -41,4 +46,5 @@ Step N: FAILED      | attempts=K | class={transient|model-fixable|interrupt|unkn
 - Blindly trying variations on failure. If root cause unknown after 3 attempts → STOP.
 - Starting without handoff. Insufficient context → report NEEDS_CONTEXT.
 - Reporting "done" without tests. Will be rejected by verification.
+- Finishing starter maintenance with stale docs or stale generated Codex artifacts.
 </Failure_Modes_To_Avoid>

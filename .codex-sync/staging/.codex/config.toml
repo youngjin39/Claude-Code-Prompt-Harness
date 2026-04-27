@@ -1,0 +1,23 @@
+# GENERATED FILE: edit Claude source files and rerun scripts/generate_codex_derivatives.sh
+
+model_reasoning_effort = "high"
+approval_policy = "never"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+personality = "pragmatic"
+project_doc_fallback_filenames = ["CLAUDE.md"]
+project_doc_max_bytes = 32768
+
+[agents]
+max_threads = 6
+max_depth = 1
+
+[features]
+multi_agent = true
+shell_snapshot = true
+personality = true
+
+
+[mcp_servers."sequential-thinking"]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]

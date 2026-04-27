@@ -17,3 +17,7 @@ node_modules/
 
 # Tasks (working memory, local only)
 tasks/
+
+# Harness runtime state
+harness/state/*.json
+harness/state/*.jsonl

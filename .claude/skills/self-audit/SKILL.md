@@ -1,6 +1,6 @@
 ---
 name: self-audit
-description: "Starter compliance self-check. Validates CLAUDE.md sections, .claude/ components, docs/ structure, and tasks/ files against the 21-element baseline.\n\nTrigger: self-audit, compliance, starter check, self-check, 자기점검"
+description: "Starter compliance self-check. Validates current CLAUDE.md runtime sections, .claude/ components, docs/ structure, and tasks/ files against the active starter contract.\n\nTrigger: self-audit, compliance, starter check, self-check, 자기점검"
 user-invocable: true
 context: fork
 allowed-tools: Read, Grep, Glob, Bash
@@ -9,11 +9,22 @@ allowed-tools: Read, Grep, Glob, Bash
 # Self-Audit — Starter Compliance Check
 
 Run this skill periodically to verify the project follows the starter baseline.
-Unlike project-doctor (build/security/memory integrity), this skill checks **structural compliance** with the 21-element starter standard.
+Unlike project-doctor (build/security/memory integrity), this skill checks **structural compliance** with the current starter contract.
 
 ## Procedure
 
-### Phase 1: CLAUDE.md Section Scan (21 items)
+### Phase 0: Starter Integrity Gate
+Run:
+```bash
+python3 scripts/verify_starter_integrity.py
+python3 scripts/verify_codex_sync.py
+```
+
+- If `verify_starter_integrity.py` fails, report those failures first.
+- Do not duplicate the same findings manually unless the script output is incomplete.
+- Treat script output as the fast-path integrity baseline for starter structure + manifest/doc/generated drift.
+
+### Phase 1: CLAUDE.md Section Scan (16 items)
 Read CLAUDE.md and check for presence of each required section.
 Mark each as ✅ present, ⚠️ partial (exists but incomplete), ❌ missing.
 
@@ -22,33 +33,28 @@ Mark each as ✅ present, ⚠️ partial (exists but incomplete), ❌ missing.
 | 1 | Development Environment | `## Development Environment` or `## Dev Environment` | Table with OS, Language/Framework, Package Manager rows |
 | 2 | Build & Run | `## Build & Run` or `## Build` or `## Commands` | At least 1 runnable command |
 | 3 | Project Structure | `## Project Structure` or `## Structure` | Tree diagram or structured listing |
-| 4 | Workflow Pipeline | `## Workflow Pipeline` or `## Workflow` | Ambiguous Request Gate + Task Flow present |
-| 5 | Agent Role Separation | `Agent Role Separation` or `### Agents` | Table with 3 agents (orchestrator, executor, quality) + Writes Code column |
-| 6 | Branching Criteria | `Branching Criteria` | Simple (1~2) vs Complex (3+) distinction |
-| 7 | Gate Conditions | `Gate Conditions` | Phase/Entry/Exit table with 4 rows |
-| 8 | Built-in Rules | `Built-in Rules` | 4 rules: brainstorming alternatives, writing-plans concrete, execution circuit-breaker, verification evidence-only |
-| 9 | Skill Trigger System | `Skill Trigger` or `Skill Keyword` | Keyword table with skill paths |
-| 10 | Model Routing | `Model Routing` | Task-type → model table (haiku/sonnet/opus) |
-| 11 | Memory System | `Memory System` | 3 layers described (docs, lessons, sessions) |
-| 12 | Memory Usage Protocol | `Memory Usage Protocol` | 4-step: scan → read → skip → save |
-| 13 | Autonomous Bug Fix | `Autonomous Bug Fix` | Section exists |
-| 14 | Context Management | `Context Management` | compact + handoff + 20% rule + context recovery |
-| 15 | Sub-agent Isolation | `Sub-agent Isolation` | 4 rules (no history, extract from handoff, 1=1, results only) |
-| 16 | Automation Hooks | `Automation Hooks` | SessionStart + PreCompact + PostToolUse documented |
-| 17 | Automatic Memory Harvesting | `Memory Harvesting` | Section exists |
-| 18 | Quality Checks | `Quality Checks` | change_log + lint threshold + self-check |
-| 19 | Project Management | `Project Management` | Start reading + update before changes + archive |
-| 20 | Token Efficiency | `Token Efficiency` | 4 rules: no re-read, no restate, scope containment, session ground truth |
-| 21 | Principles | `Principles` | no-action default + simplicity + root cause + prohibition>instruction + no filler (with specific bans) |
+| 4 | Required Reads | `## Required Reads` | Startup + conditional reference docs present |
+| 5 | Workflow | `## Workflow` | 0-signal, simple, and complex routing present |
+| 6 | Mode Classification | `## Mode Classification` | Starter Maintenance + Cross-Harness rules present |
+| 7 | Agent / Skill / Hook Contract | `## Agent / Skill / Hook Contract` | Agent roles + hook mirror contract present |
+| 8 | Harness Defaults | `## Harness Defaults` | default runtime + opt-in scope present |
+| 9 | Custom Harness Rules | `## Custom Harness Rules` | current hard-rule policy present |
+| 10 | Codex Derivation Layer | `## Codex Derivation Layer` | source-of-truth + regenerate rule present |
+| 11 | Skill Trigger Table | `## Skill Trigger Table` | core default list + skill path table present |
+| 12 | Context Management | `## Context Management` | handoff + compact timing rules present |
+| 13 | Language Protocol | `## Language Protocol` | Korean/English split + scannable reports present |
+| 14 | Surgical Change Rules | `## Surgical Change Rules` | minimum-change scope rules present |
+| 15 | Token Efficiency | `## Token Efficiency` | no re-read + no restate + ground-truth rules present |
+| 16 | Principles | `## Principles` | evidence-first + minimum-change + no-filler present |
 
 ### Phase 2: .claude/ Component Check
 Glob for files and compare against baseline:
 
 | Component | Required | Check |
 |---|---|---|
-| Core skills | brainstorming, code-review, deep-interview, git-commit, project-doctor, self-audit, testing, verification, writing-plans | `ls .claude/skills/*/SKILL.md` |
+| Core skills | brainstorming, code-review, deep-interview, git-commit, project-doctor, self-audit, testing, ux-ui-design, verification, writing-plans | `ls .claude/skills/*/SKILL.md` |
 | Agents | main-orchestrator, executor-agent, quality-agent | `ls .claude/agents/*.md` |
-| Hooks | session-start.sh, pre-compact.sh, post-edit-check.sh | `ls .claude/hooks/*.sh` |
+| Hooks | session-start.sh, pre-compact.sh, pre-tool-use.sh, tdd-guard.sh, post-edit-check.sh, session-end.sh | `ls .claude/hooks/*.sh` |
 
 Domain-specific skills/agents beyond baseline are noted but not flagged.
 
@@ -57,6 +63,7 @@ Domain-specific skills/agents beyond baseline are noted but not flagged.
 |---|---|
 | memory-map.md | Exists + has keyword entries (not empty template) |
 | 7 subdirectories | architecture/, decisions/, patterns/, domain/, risks/, integrations/, references/ |
+| operations docs | claude-runtime.md, codex-runtime.md, hook-contract.md, harness-application.md, starter-maintenance-mode.md |
 
 ### Phase 4: tasks/ File Check
 | Required | Check |
@@ -68,13 +75,15 @@ Domain-specific skills/agents beyond baseline are noted but not flagged.
 ### Phase 5: Cross-Validation
 - Skill Keyword Table in CLAUDE.md lists paths → verify those paths exist
 - memory-map.md file references → verify files exist
-- Agent table in CLAUDE.md → verify agent .md files exist
+- Required hooks/skills/agents from verifier baseline → verify files exist
+- Self-recognition contract stays aligned across `CLAUDE.md`, `AGENTS.md`, runtime docs, and README summary text
+- Reuse `scripts/verify_starter_integrity.py` and `scripts/verify_codex_sync.py` output instead of re-deriving starter/doc drift manually
 
 ## Scoring
 - ✅ = 1 point
 - ⚠️ = 0.5 points
 - ❌ = 0 points
-- Score = points / 21 × 100%
+- Score = points / 16 × 100%
 
 ## Grade Scale
 | Grade | Score | Meaning |
@@ -90,7 +99,7 @@ Domain-specific skills/agents beyond baseline are noted but not flagged.
 Date: {YYYY-MM-DD}
 Project: {project name from CLAUDE.md}
 
-### CLAUDE.md Sections (21 items)
+### CLAUDE.md Sections (16 items)
 | # | Section | Status | Note |
 |---|---|---|---|
 | 1 | Development Environment | ✅/⚠️/❌ | {detail} |
@@ -99,9 +108,9 @@ Project: {project name from CLAUDE.md}
 ### .claude/ Components
 | Component | Expected | Found | Missing |
 |---|---|---|---|
-| Skills | 9 core | {N} | {list} |
+| Skills | 10 core | {N} | {list} |
 | Agents | 3 | {N} | {list} |
-| Hooks | 3 | {N} | {list} |
+| Hooks | 6 | {N} | {list} |
 
 ### docs/ Structure
 | Item | Status | Note |
@@ -119,9 +128,10 @@ Project: {project name from CLAUDE.md}
 |---|---|---|
 | Skill paths match | ✅/❌ | {phantom entries} |
 | Memory-map refs valid | ✅/❌ | {broken refs} |
+| Self-recognition contract aligned | ✅/❌ | {missing or drifted files} |
 
 ### Summary
-- Score: {N}/21 ({%})
+- Score: {N}/16 ({%})
 - Grade: {A/B/C/D}
 - ✅: {N} / ⚠️: {N} / ❌: {N}
 
@@ -136,7 +146,7 @@ For each skill in `.claude/skills/*/SKILL.md`:
 | Check | Method | Verdict |
 |---|---|---|
 | **Size** | Line count. >400 = oversized, >200 = heavy | Flag |
-| **Usage** | memory-map.md Skill Usage table `count` column. 0 after 30+ days since creation = dormant | Warn |
+| **Usage** | Treat memory-map.md Skill Usage table as a manual signal only. If it is stale or all-zero, flag the tracker instead of marking the skill dormant. | Warn |
 | **Overlap** | Compare trigger keywords across all skills. >50% keyword overlap between two skills = potential merge candidate | Flag |
 | **Freshness** | Check if skill references external tools/URLs → verify they still exist (quick WebFetch or which check) | Warn if broken |
 | **Clarity** | Has clear Procedure section? Has explicit Output format? Has Hard Rules? | ⚠️ if missing any |

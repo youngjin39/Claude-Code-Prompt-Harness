@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "strategy": "one-way-claude-to-codex",
+  "rules": {
+    "source_of_truth": [
+      "CLAUDE.md",
+      ".claude/agents/*.md",
+      ".claude/skills/*/SKILL.md",
+      ".claude/hooks/*.sh",
+      ".claude/settings.json",
+      ".claude/settings.local.json",
+      ".mcp.json"
+    ],
+    "direct_edits_forbidden_on": [
+      "AGENTS.md",
+      ".codex/config.toml",
+      ".codex/agents/*.toml",
+      ".agents/skills/*/SKILL.md"
+    ]
+  },
+  "mappings": [
+    {
+      "source": "CLAUDE.md",
+      "targets": ["AGENTS.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Main operating policy for Codex."
+    },
+    {
+      "source": ".claude/agents/main-orchestrator.md",
+      "targets": [".codex/agents/main-orchestrator.toml"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Create one row per Claude agent."
+    },
+    {
+      "source": ".claude/skills/testing/SKILL.md",
+      "targets": [".agents/skills/testing/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Repeat for each portable skill."
+    },
+    {
+      "source": ".claude/settings.local.json",
+      "targets": [".codex/config.toml"],
+      "change_scope": "config",
+      "sync_policy": "review-and-regenerate",
+      "owner": "project-maintainer",
+      "notes": "Permissions and hook wiring require semantic mapping."
+    }
+  ]
+}

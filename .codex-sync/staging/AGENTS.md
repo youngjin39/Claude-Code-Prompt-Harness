@@ -1,0 +1,127 @@
+<!-- GENERATED FILE: edit CLAUDE.md and rerun scripts/generate_codex_derivatives.sh -->
+
+# Codex Project Instructions
+
+## Source Of Truth
+- Edit `CLAUDE.md`, `.claude/agents/*`, `.claude/skills/*`.
+- Do not hand-edit `AGENTS.md`, `.codex/`, or `.agents/`.
+
+## Startup
+- Read `tasks/plan.md`, `tasks/lessons.md`, and `docs/memory-map.md` at task start.
+- If session continuity matters, read the latest file in `tasks/sessions/`.
+- Use generated Codex skills first.
+- If derived files are stale, regenerate from Claude source.
+
+- Skills: `brainstorming, deep-interview, git-commit, project-doctor, verification, writing-plans`
+
+## Required Reads
+1. `tasks/plan.md`
+2. `tasks/lessons.md`
+3. `docs/memory-map.md`
+4. `PRD.md` when product scope, UX priorities, or MVP boundaries matter
+5. `ARCHITECTURE.md` when wrappers, boundaries, or data flow matter
+6. `ADR.md` when historical decisions or tradeoffs matter
+7. `UI_GUIDE.md` when UI behavior, visual rules, or anti-patterns matter
+8. `harness/README.md` when phase state, incidents, or auto-commit behavior matters
+9. `docs/operations/claude-runtime.md` when task flow, hooks, or memory behavior matters
+10. `docs/integrations/claude-to-codex-derivation.md` when Codex parity or regeneration matters
+
+
+## Workflow
+- 0 specificity signals → `deep-interview`
+- 1~2-step task → direct execution + self-check
+- 3+ step task → `brainstorming` → `writing-plans` → `executor-agent` → `verification`
+- UI work → `ux-ui-design` before implementation
+- Review request or 4+ issues → `quality-agent`
+
+
+## Agent / Skill / Hook Contract
+- Agents own execution shape:
+  - `main-orchestrator` = classify, choose workflow, decide delegation.
+  - `executor-agent` = execute approved multi-step plans.
+  - `quality-agent` = read-only adversarial review.
+- Skills own task-specific procedure:
+  - Load only the matching generated skill bodies you need.
+  - Prefer workflow skills in canonical order: `deep-interview` → `brainstorming` → `writing-plans` → `verification`.
+  - Use optional skills only when the request explicitly matches their trigger.
+- Hooks own automatic enforcement and state:
+  - `SessionStart` loads startup context; treat that context as authoritative, then read more only when the task requires it.
+  - `PreCompact` requires a handoff before context reduction.
+  - `PreToolUse` enforces path safety and TDD guardrails before edits/commands.
+  - `PostToolUse` inspects edits for debug leftovers and credential leaks.
+  - `SessionEnd` saves the latest session snapshot for continuity.
+- Do not duplicate hook logic in prompts or ad-hoc scripts. Instead, work with the hook contract:
+  - expect guards before editing,
+  - keep `tasks/plan.md` and handoffs current,
+  - do not bypass denied-path or test-first expectations.
+- Codex does not execute Claude hooks natively. Generated Codex artifacts must therefore mirror the same runtime contract explicitly:
+  - read the same startup files,
+  - treat hook-managed files as canonical state,
+  - use generated skills before improvising new procedure.
+
+
+## Harness Defaults
+- Default runtime = 3 agents + core skills + 6 hooks + `execute.py` state engine.
+- Optional skills, MCP servers, and domain packs are opt-in. Do not assume they exist.
+- Project-specific hard rules must live in `PRD.md`, `ARCHITECTURE.md`, `ADR.md`, `UI_GUIDE.md`, or an explicit `CRITICAL` section here.
+
+
+## Codex Derivation Layer
+- `Claude` files are the source of truth.
+- `AGENTS.md`, `.codex/`, and `.agents/` are generated Codex artifacts.
+- Edit source first, then regenerate with `scripts/generate_codex_derivatives.sh`.
+
+
+## Skill Trigger Table
+Core default = `brainstorming`, `writing-plans`, `verification`, `deep-interview`, `git-commit`, `project-doctor`.
+
+| Intent | Skill | Path |
+|---|---|---|
+| design, architecture, new feature | brainstorming | .claude/skills/brainstorming/SKILL.md |
+| plan, step design | writing-plans | .claude/skills/writing-plans/SKILL.md |
+| verify, proof, self-check | verification | .claude/skills/verification/SKILL.md |
+| interview, clarify, ambiguous | deep-interview | .claude/skills/deep-interview/SKILL.md |
+| commit, git, save changes | git-commit | .claude/skills/git-commit/SKILL.md |
+| review, PR, quality | code-review | .claude/skills/code-review/SKILL.md |
+| test, TDD, unit test | testing | .claude/skills/testing/SKILL.md |
+| diagnose, doctor, health check | project-doctor | .claude/skills/project-doctor/SKILL.md |
+| ui, ux, screen, frontend | ux-ui-design | .claude/skills/ux-ui-design/SKILL.md |
+
+
+## Context Management
+- Handoffs only. Never pass session history to sub-agents.
+- Before `/compact`, write a handoff in `tasks/handoffs/`.
+- Do not start complex work in the last 20% of context.
+
+
+## Language Protocol
+- User-facing output (reports, task logs) → Korean.
+- User-facing reports: group by purpose and label each block, e.g. `Purpose / Evidence / Action`.
+- User-facing progress updates must stay scannable: separate `Progress / Result / Discussion` when relevant.
+- Report progress, results, and discussion points explicitly, but keep each block short. Do not dump internal reasoning logs.
+- Use line breaks or bullets so the user can scan updates quickly. Avoid wall-of-text status messages.
+- Internal (agent comms, handoffs, docs/, skills, code, commits) → English.
+- English is ~2-3x more token-efficient for same information.
+
+
+## Surgical Change Rules
+- Do not touch code outside the scope of the request.
+- Do not "improve" adjacent code, comments, or formatting beyond what was asked.
+- Do not refactor code that isn't broken. Working code is not an invitation to rewrite.
+- Dead code discovered during work: report it, do not delete unless explicitly asked.
+- No error handling for scenarios that cannot happen. Trust internal code and framework guarantees. Only validate at system boundaries (user input, external APIs).
+- No speculative abstractions for single-use cases. Three similar lines > a premature helper.
+
+
+## Token Efficiency
+- Do not re-read files already read in the current session unless the file may have changed.
+- Do not restate the user's question. Execute immediately.
+- When the user corrects a fact, the correction becomes session ground truth. Do not revert.
+
+
+## Principles
+- **Evidence first.** Default is no-action. Define success criteria first and act only on verified evidence.
+- **Minimum change.** Simplicity first. Solve root causes with the smallest effective change. No workarounds.
+- **Goal-driven.** Optimize for the outcome, not the literal command. Give sub-agents verification targets, not step-by-step micromanagement.
+- **Prohibition > instruction.** State bans before desired behavior.
+- **No filler.** No flattery, hedging, repetition, or padding. Every sentence must add information.

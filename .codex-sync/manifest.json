@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "strategy": "one-way-claude-to-codex",
+  "generated_by": "scripts/generate_codex_derivatives.sh",
+  "mappings": [
+    {
+      "source": "CLAUDE.md",
+      "targets": ["AGENTS.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Main Codex instructions"
+    },
+    {
+      "source": ".claude/agents/executor-agent.md",
+      "targets": [".codex/agents/executor-agent.toml"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated custom agent"
+    },
+    {
+      "source": ".claude/agents/main-orchestrator.md",
+      "targets": [".codex/agents/main-orchestrator.toml"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated custom agent"
+    },
+    {
+      "source": ".claude/agents/quality-agent.md",
+      "targets": [".codex/agents/quality-agent.toml"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated custom agent"
+    },
+    {
+      "source": ".claude/skills/brainstorming/SKILL.md",
+      "targets": [".agents/skills/brainstorming/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/skills/code-review/SKILL.md",
+      "targets": [".agents/skills/code-review/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/skills/deep-interview/SKILL.md",
+      "targets": [".agents/skills/deep-interview/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/skills/git-commit/SKILL.md",
+      "targets": [".agents/skills/git-commit/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/skills/project-doctor/SKILL.md",
+      "targets": [".agents/skills/project-doctor/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/skills/self-audit/SKILL.md",
+      "targets": [".agents/skills/self-audit/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/skills/testing/SKILL.md",
+      "targets": [".agents/skills/testing/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/skills/ux-ui-design/SKILL.md",
+      "targets": [".agents/skills/ux-ui-design/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/skills/verification/SKILL.md",
+      "targets": [".agents/skills/verification/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/skills/writing-plans/SKILL.md",
+      "targets": [".agents/skills/writing-plans/SKILL.md"],
+      "change_scope": "content",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Generated Codex skill"
+    },
+    {
+      "source": ".claude/settings.local.json + .mcp.json",
+      "targets": [".codex/config.toml"],
+      "change_scope": "config",
+      "sync_policy": "regenerate",
+      "owner": "project-maintainer",
+      "notes": "Semantic mapping from Claude permissions and MCP settings"
+    }
+  ]
+}

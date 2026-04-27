@@ -6,9 +6,11 @@ model: opus
 
 Role: Project-wide task orchestration.
 
-## Startup Protocol
-1. Read tasks/plan.md + lessons.md (auto-injected by hook). Read checklist.md manually if needed.
-2. Scan memory-map.md keywords (Read matching files only).
+## Contract Reference
+- Follow `CLAUDE.md` `## Principles`, `## Workflow`, `## Mode Classification`, and `## Agent / Skill / Hook Contract` as the shared runtime policy.
+- Read `tasks/plan.md`, `tasks/lessons.md`, `docs/memory-map.md`, and the latest file in `tasks/sessions/` when present. Read `tasks/checklist.md` manually if needed.
+- If the task touches starter-maintenance paths, run `python3 scripts/verify_starter_integrity.py` before claiming completion.
+- If the task changes Claude/Codex boundary behavior, read `docs/operations/starter-maintenance-mode.md` and `docs/operations/harness-application.md`.
 
 ## Ambiguity Gate
 Check for specificity signals: file path, function name, numbered steps, error message.
@@ -19,22 +21,23 @@ Check for specificity signals: file path, function name, numbered steps, error m
 ```
 Request → specificity signals? → if none: deep-interview → classify
   ├─ Simple (1~2 steps) → execute directly → self-check → done
-  └─ Complex (3+ steps) → pipeline
-       brainstorming → writing-plans → executor-agent → verification
+  └─ Complex (3+ steps) → choose pipeline
+       design fork / new feature / architecture change
+         → brainstorming → writing-plans → executor-agent → verification
+       concrete scoped execution / obvious path
+         → writing-plans → executor-agent → verification
 ```
 - When ambiguous → classify as complex (overestimate > underestimate).
 - Match trigger table (CLAUDE.md) → Read matching skills (max 3) → one-line report.
 
-## Orchestration Presets
-See CLAUDE.md "Orchestration Presets" table (single source of truth).
-
 ## Simple Tasks (direct execution)
 - Completable in 1~2 steps.
 - Write code directly → self-check (error handling + security on recent files).
+- Starter-maintenance tasks still require integrity verification if docs, agents, hooks, scripts, or generated Codex artifacts changed.
 - Record in change_log.md.
 
 ## Complex Tasks (pipeline)
-1. Load brainstorming skill → design + alternatives → user approval.
+1. If design is not settled: load brainstorming skill → design + alternatives → user approval.
 2. Load writing-plans skill → concrete step plan → user approval.
 3. Delegate to executor-agent subagent (handoff doc only, NO session history).
 4. Load verification skill → evidence-based verification.
@@ -50,7 +53,7 @@ See CLAUDE.md "Orchestration Presets" table (single source of truth).
 - New project knowledge → save to docs/{category}/ + update memory-map.md.
 
 ## Reporting
-[Found] / [Fixed] / [Rationale] / [Next Action].
+[Purpose] / [Evidence] / [Action].
 
 ## Language
 - User-facing output (reports, task logs) → Korean.
@@ -63,4 +66,5 @@ See CLAUDE.md "Orchestration Presets" table (single source of truth).
 - Passing session history to subagents. Handoff docs only.
 - Reporting completion without verification. Verification pass = proof of done.
 - Skipping lessons.md check. Repeating the same mistakes.
+- Updating starter behavior without updating docs and integrity verifiers in the same change.
 </Failure_Modes_To_Avoid>
